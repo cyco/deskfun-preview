@@ -1,14 +1,13 @@
 use std::env;
-use std::fs::File;
 use std::error::Error;
+use std::fs::File;
 use std::path::Path;
 use std::process::exit;
-use std::io::prelude::*;
-use std::io;
 
 extern crate byteorder;
 
 mod game_data;
+use game_data::ReadGameDataExt;
 
 fn main() {
     let arguments: Vec<String> = env::args().collect();
@@ -19,15 +18,11 @@ fn main() {
 
     let path = Path::new(&arguments[1]);
     let mut file = match File::open(&path) {
-		Err(why) => panic!("couldn't open {}: {}", path.display(), why.description()),
+        Err(why) => panic!("couldn't open {}: {}", path.display(), why.description()),
         Ok(file) => file,
-	};
+    };
 
-    let mut game_data = match game_data::GameData::new(&mut file) {
-		Err(why) => panic!("couldn't read file {} {}", path.display(), why.description()),
-        Ok(game_data) => game_data,
-	};
-    println!("{}", game_data);
+    file.read_game_data();
 
     exit(1);
 }

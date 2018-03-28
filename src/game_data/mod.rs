@@ -1,7 +1,4 @@
-use std;
-use std::fmt;
-use std::io;
-use std::io::Read;
+use std::io::{self, Read, Result};
 
 mod character;
 mod end;
@@ -17,87 +14,41 @@ use self::character::ReadCharactersExt;
 use self::end::ReadEndExt;
 use self::item::ReadItemsExt;
 use self::puzzle::ReadPuzzlesExt;
-use self::setup_image::SetupImage;
-use self::sounds::Sounds;
-use self::tile::Tiles;
-use self::version::Version;
-use self::zone::Zones;
+use self::setup_image::ReadSetupImageExt;
+use self::sounds::ReadSoundExt;
+use self::tile::ReadTileExt;
+use self::version::ReadVersionExt;
+use self::zone::ReadZoneExt;
 
-pub trait Category {
-    fn read_from(&mut self, reader: &mut io::Read) -> Result<(), std::string::ParseError>;
-}
-
-pub struct GameData {}
-
-impl GameData {
-    pub fn new(reader: &mut io::Read) -> Result<(GameData), std::string::ParseError> {
+pub trait ReadGameDataExt: io::Read {
+    fn read_game_data(&mut self) -> Result<()> {
         loop {
             let mut category_name = String::new();
-            reader
-                .take(4)
+            self.take(4)
                 .read_to_string(&mut category_name)
                 .expect("Unable to read category name");
 
             match category_name.as_ref() {
-                "VERS" => {
-                    (Version {})
-                        .read_from(reader)
-                        .expect("Unable to read version");
-                    ()
-                }
-                "STUP" => {
-                    (SetupImage {})
-                        .read_from(reader)
-                        .expect("Unable to read setup image");
-                    ()
-                }
-                "SNDS" => {
-                    Sounds::new()
-                        .read_from(reader)
-                        .expect("Unable to read sounds");
-                    ()
-                }
-                "TILE" => {
-                    Tiles::new()
-                        .read_from(reader)
-                        .expect("Unable to read sounds");
-                    ()
-                }
-                "ZONE" => {
-                    Zones::new()
-                        .read_from(reader)
-                        .expect("Unable to read sounds");
-                    ()
-                }
-                "PUZ2" => {
-                    reader.read_puzzles();
-                }
-                "CHAR" => {
-                    reader.read_characters();
-                }
-                "CHWP" => {
-                    reader.read_character_weapons();
-                }
-                "CAUX" => {
-                    reader.read_character_auxiliaries();
-                }
-                "TNAM" => {
-                    reader.read_tile_names();
-                }
+                "VERS" => self.read_version(),
+                "STUP" => self.read_setup_image(),
+                "SNDS" => self.read_sounds(),
+                "TILE" => self.read_tiles(),
+                "ZONE" => self.read_zones(),
+                "PUZ2" => self.read_puzzles(),
+                "CHAR" => self.read_characters(),
+                "CHWP" => self.read_character_weapons(),
+                "CAUX" => self.read_character_auxiliaries(),
+                "TNAM" => self.read_tile_names(),
                 "ENDF" => {
-                    reader.read_end();
+                    self.read_end();
                     break;
                 }
                 _ => panic!("Unknown category {} encountered", category_name),
             };
         }
 
-        Ok(GameData {})
-    }
-}
-
-impl fmt::Display for GameData {
-    fn fmt(&self, _: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         Ok(())
     }
 }
+
+impl<R: io::Read + ?Sized> ReadGameDataExt for R {}

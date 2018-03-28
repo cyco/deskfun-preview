@@ -1,6 +1,5 @@
 use byteorder::{LittleEndian, ReadBytesExt};
-use std;
-use std::io::{self, Read, Result};
+use std::io::{self, Result};
 
 pub trait ReadEndExt: io::Read {
     fn read_end(&mut self) -> Result<()> {

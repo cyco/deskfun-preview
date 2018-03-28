@@ -1,5 +1,4 @@
 use byteorder::{LittleEndian, ReadBytesExt};
-use std;
 use std::io::{self, Read, Result};
 
 pub trait ReadCharactersExt: io::Read {

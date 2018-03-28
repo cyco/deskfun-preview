@@ -1,5 +1,4 @@
 use byteorder::{LittleEndian, ReadBytesExt};
-use std;
 use std::io::{self, Read, Result};
 
 pub trait ReadPuzzlesExt: io::Read {
@@ -22,12 +21,9 @@ pub trait ReadPuzzlesExt: io::Read {
             let length = self.read_u16::<LittleEndian>().unwrap();
             let mut text = String::new();
             self.take(length.into()).read_to_string(&mut text);
-
-            println!("text {} ({} bytes): {}", n, length, text);
         }
         let item_1 = self.read_u16::<LittleEndian>();
         let item_2 = self.read_u16::<LittleEndian>();
-        println!("items: {} {}", item_1.unwrap(), item_2.unwrap());
 
         Ok((index.into(), ()))
     }
