@@ -9,6 +9,7 @@ mod sounds;
 mod tile;
 mod version;
 mod zone;
+mod npc;
 
 use self::character::ReadCharactersExt;
 use self::end::ReadEndExt;

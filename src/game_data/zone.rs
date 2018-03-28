@@ -1,6 +1,8 @@
 use byteorder::{LittleEndian, ReadBytesExt};
 use std::io::{self, Read, Result};
 
+use super::npc::ReadNPCExt;
+
 pub trait ReadZoneExt: io::Read {
     fn read_zones(&mut self) -> Result<()> {
         let count = self.read_u16::<LittleEndian>().unwrap();
@@ -173,19 +175,6 @@ pub trait ReadZoneExt: io::Read {
         );
         let size = self.read_u32::<LittleEndian>().unwrap();
         let unknown = self.read_u16::<LittleEndian>().unwrap();
-
-        Ok(())
-    }
-
-    fn read_npc(&mut self) -> Result<()> {
-        let character = self.read_u16::<LittleEndian>().unwrap();
-        let x = self.read_u16::<LittleEndian>().unwrap();
-        let y = self.read_u16::<LittleEndian>().unwrap();
-        let unknown1 = self.read_i16::<LittleEndian>().unwrap();
-        let unknown2 = self.read_i32::<LittleEndian>().unwrap();
-        for _ in 0..0x20 {
-            self.read_i8().unwrap();
-        }
 
         Ok(())
     }
