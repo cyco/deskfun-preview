@@ -2,6 +2,7 @@ use byteorder::{LittleEndian, ReadBytesExt};
 use std::io::{self, Read, Result};
 
 use super::npc::ReadNPCExt;
+use super::hotspot::ReadHotspotExt;
 
 pub trait ReadZoneExt: io::Read {
     fn read_zones(&mut self) -> Result<()> {
@@ -53,17 +54,6 @@ pub trait ReadZoneExt: io::Read {
         for _ in 0..action_count {
             self.read_action();
         }
-
-        Ok(())
-    }
-
-    fn read_hotspot(&mut self) -> Result<()> {
-        let hotspot_type = self.read_u32::<LittleEndian>().unwrap();
-
-        let x = self.read_u16::<LittleEndian>().unwrap();
-        let y = self.read_u16::<LittleEndian>().unwrap();
-        let enabled = self.read_u16::<LittleEndian>().unwrap();
-        let argument = self.read_i16::<LittleEndian>().unwrap();
 
         Ok(())
     }

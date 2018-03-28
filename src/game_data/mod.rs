@@ -10,6 +10,7 @@ mod tile;
 mod version;
 mod zone;
 mod npc;
+mod hotspot;
 
 use self::character::ReadCharactersExt;
 use self::end::ReadEndExt;
