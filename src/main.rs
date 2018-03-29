@@ -25,13 +25,13 @@ fn main() {
         Ok(file) => file,
     };
 
-    file.read_game_data();
+    let data = file.read_game_data().unwrap();
 
     for i in 2..arguments.len() {
         let path = Path::new(&arguments[i]);
         println!("Reading save game from {}", path.display());
         let mut file = File::open(&path).unwrap();
-        file.read_save_game();
+        file.read_save_game(&data);
     }
 
     exit(1);
