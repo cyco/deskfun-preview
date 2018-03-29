@@ -1,6 +1,7 @@
 use byteorder::{LittleEndian, ReadBytesExt};
 use std::io::{self, Read, Result};
 
+use super::action::*;
 use super::hotspot::*;
 use super::npc::*;
 
@@ -11,6 +12,7 @@ pub struct Zone {
     pub height: u16,
     pub hotspots: Vec<Hotspot>,
     pub npcs: Vec<NPC>,
+    pub actions: Vec<Action>,
 }
 
 pub trait ReadZoneExt: io::Read {
@@ -54,7 +56,7 @@ pub trait ReadZoneExt: io::Read {
         let hotspot_count = self.read_u16::<LittleEndian>().unwrap();
         let mut hotspots = Vec::new();
         for _ in 0..hotspot_count {
-            hotspots.push(self.read_hotspot().unwrap());
+            hotspots.push(self.read_hotspot()?);
         }
 
         let (npcs, _) = self.read_izax().unwrap();
@@ -63,52 +65,18 @@ pub trait ReadZoneExt: io::Read {
         self.read_izx4();
 
         let action_count = self.read_u16::<LittleEndian>().unwrap();
+        let mut actions = Vec::with_capacity(action_count.into());
         for _ in 0..action_count {
-            self.read_action();
+            actions.push(self.read_action()?);
         }
 
         Ok(Zone {
-            hotspots: hotspots,
-            npcs: npcs,
             width: width,
             height: height,
+            hotspots: hotspots,
+            npcs: npcs,
+            actions: actions,
         })
-    }
-
-    fn read_action(&mut self) -> Result<()> {
-        let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker);
-        assert!(
-            marker == "IACT",
-            "Expected to find IACT category, found {} instead",
-            marker
-        );
-        let size = self.read_u32::<LittleEndian>().unwrap();
-        let condition_count = self.read_u16::<LittleEndian>().unwrap();
-        for _ in 0..condition_count {
-            self.read_action_item();
-        }
-
-        let instruction_count = self.read_u16::<LittleEndian>().unwrap();
-        for _ in 0..instruction_count {
-            self.read_action_item();
-        }
-
-        Ok(())
-    }
-
-    fn read_action_item(&mut self) -> Result<()> {
-        let opcode = self.read_u16::<LittleEndian>().unwrap();
-        for _ in 0..5 {
-            self.read_i16::<LittleEndian>().unwrap();
-        }
-        let text_length = self.read_u16::<LittleEndian>().unwrap();
-        if text_length != 0 {
-            let mut text = String::new();
-            self.take(text_length.into()).read_to_string(&mut text);
-        }
-
-        Ok(())
     }
 
     fn read_izax(&mut self) -> Result<(Vec<NPC>, ())> {
@@ -123,7 +91,7 @@ pub trait ReadZoneExt: io::Read {
         let unknown_count = self.read_u16::<LittleEndian>().unwrap();
 
         let npc_count = self.read_u16::<LittleEndian>().unwrap();
-        let npcs = Vec::with_capacity(npc_count.into());
+        let mut npcs = Vec::with_capacity(npc_count.into());
         for _ in 0..npc_count {
             npcs.push(self.read_npc().unwrap());
         }

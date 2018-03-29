@@ -11,6 +11,7 @@ pub mod sounds;
 pub mod tile;
 pub mod version;
 pub mod zone;
+pub mod action;
 
 use self::character::ReadCharactersExt;
 use self::end::ReadEndExt;
