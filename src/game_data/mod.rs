@@ -1,16 +1,16 @@
 use std::io::{self, Read, Result};
 
-mod character;
-mod end;
-mod item;
-mod puzzle;
-mod setup_image;
-mod sounds;
-mod tile;
-mod version;
-mod zone;
-mod npc;
-mod hotspot;
+pub mod character;
+pub mod end;
+pub mod hotspot;
+pub mod item;
+pub mod npc;
+pub mod puzzle;
+pub mod setup_image;
+pub mod sounds;
+pub mod tile;
+pub mod version;
+pub mod zone;
 
 use self::character::ReadCharactersExt;
 use self::end::ReadEndExt;
@@ -20,10 +20,16 @@ use self::setup_image::ReadSetupImageExt;
 use self::sounds::ReadSoundExt;
 use self::tile::ReadTileExt;
 use self::version::ReadVersionExt;
-use self::zone::ReadZoneExt;
+use self::zone::*;
+
+pub struct GameData {
+    pub zones: Vec<Zone>,
+}
 
 pub trait ReadGameDataExt: io::Read {
-    fn read_game_data(&mut self) -> Result<()> {
+    fn read_game_data(&mut self) -> Result<GameData> {
+        let mut zones = Vec::new();
+
         loop {
             let mut category_name = String::new();
             self.take(4)
@@ -35,7 +41,10 @@ pub trait ReadGameDataExt: io::Read {
                 "STUP" => self.read_setup_image(),
                 "SNDS" => self.read_sounds(),
                 "TILE" => self.read_tiles(),
-                "ZONE" => self.read_zones(),
+                "ZONE" => {
+                    zones = self.read_zones().unwrap();
+                    Ok(())
+                }
                 "PUZ2" => self.read_puzzles(),
                 "CHAR" => self.read_characters(),
                 "CHWP" => self.read_character_weapons(),
@@ -49,7 +58,7 @@ pub trait ReadGameDataExt: io::Read {
             };
         }
 
-        Ok(())
+        Ok(GameData { zones: zones })
     }
 }
 

@@ -1,21 +1,32 @@
 use byteorder::{LittleEndian, ReadBytesExt};
 use std::io::{self, Read, Result};
 
-use super::npc::ReadNPCExt;
-use super::hotspot::ReadHotspotExt;
+use super::hotspot::*;
+use super::npc::*;
+
+pub const LAYERS: u8 = 3;
+
+pub struct Zone {
+    pub width: u16,
+    pub height: u16,
+    pub hotspots: Vec<Hotspot>,
+    pub npcs: Vec<NPC>,
+}
 
 pub trait ReadZoneExt: io::Read {
-    fn read_zones(&mut self) -> Result<()> {
+    fn read_zones(&mut self) -> Result<Vec<Zone>> {
         let count = self.read_u16::<LittleEndian>().unwrap();
+        let mut zones = Vec::new();
 
         for n in 0..count {
-            self.read_zone().expect("Unable to parse zone!");
+            let zone = self.read_zone().unwrap();
+            zones.push(zone);
         }
 
-        Ok(())
+        Ok(zones)
     }
 
-    fn read_zone(&mut self) -> Result<()> {
+    fn read_zone(&mut self) -> Result<Zone> {
         let planet = self.read_u16::<LittleEndian>().unwrap();
         let size = self.read_u32::<LittleEndian>().unwrap();
         let index = self.read_u16::<LittleEndian>().unwrap();
@@ -41,11 +52,12 @@ pub trait ReadZoneExt: io::Read {
             .read_to_end(&mut tile_ids);
 
         let hotspot_count = self.read_u16::<LittleEndian>().unwrap();
+        let mut hotspots = Vec::new();
         for _ in 0..hotspot_count {
-            self.read_hotspot();
+            hotspots.push(self.read_hotspot().unwrap());
         }
 
-        self.read_izax();
+        let (npcs, _) = self.read_izax().unwrap();
         self.read_izx2();
         self.read_izx3();
         self.read_izx4();
@@ -55,7 +67,12 @@ pub trait ReadZoneExt: io::Read {
             self.read_action();
         }
 
-        Ok(())
+        Ok(Zone {
+            hotspots: hotspots,
+            npcs: npcs,
+            width: width,
+            height: height,
+        })
     }
 
     fn read_action(&mut self) -> Result<()> {
@@ -94,7 +111,7 @@ pub trait ReadZoneExt: io::Read {
         Ok(())
     }
 
-    fn read_izax(&mut self) -> Result<()> {
+    fn read_izax(&mut self) -> Result<(Vec<NPC>, ())> {
         let mut marker = String::new();
         self.take(4).read_to_string(&mut marker);
         assert!(
@@ -106,8 +123,9 @@ pub trait ReadZoneExt: io::Read {
         let unknown_count = self.read_u16::<LittleEndian>().unwrap();
 
         let npc_count = self.read_u16::<LittleEndian>().unwrap();
+        let npcs = Vec::with_capacity(npc_count.into());
         for _ in 0..npc_count {
-            self.read_npc();
+            npcs.push(self.read_npc().unwrap());
         }
         let required_item_count = self.read_u16::<LittleEndian>().unwrap();
         for _ in 0..required_item_count {
@@ -118,7 +136,7 @@ pub trait ReadZoneExt: io::Read {
             let item_id = self.read_u16::<LittleEndian>().unwrap();
         }
 
-        Ok(())
+        Ok((npcs, ()))
     }
 
     fn read_izx2(&mut self) -> Result<()> {
