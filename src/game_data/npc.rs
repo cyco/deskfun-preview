@@ -1,8 +1,11 @@
 use byteorder::{LittleEndian, ReadBytesExt};
-use std::io::{self, Read, Result};
+use std::io::{self, Result};
+
+pub struct NPC {
+}
 
 pub trait ReadNPCExt: io::Read {
-    fn read_npc(&mut self) -> Result<()> {
+    fn read_npc(&mut self) -> Result<NPC> {
         let character = self.read_u16::<LittleEndian>().unwrap();
         let x = self.read_u16::<LittleEndian>().unwrap();
         let y = self.read_u16::<LittleEndian>().unwrap();
@@ -12,7 +15,7 @@ pub trait ReadNPCExt: io::Read {
             self.read_i8().unwrap();
         }
 
-        Ok(())
+        Ok(NPC {})
     }
 }
 
