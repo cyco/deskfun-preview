@@ -1,10 +1,13 @@
 use std::env;
 use std::error::Error;
 use std::fs::File;
+use std::io::Read;
 use std::path::Path;
 use std::process::exit;
 
 extern crate byteorder;
+
+mod my_byte_order;
 
 mod game_data;
 use game_data::ReadGameDataExt;
@@ -25,13 +28,21 @@ fn main() {
         Ok(file) => file,
     };
 
-    let data = file.read_game_data().unwrap();
+    let mut data = file.read_game_data().unwrap();
 
     for i in 2..arguments.len() {
         let path = Path::new(&arguments[i]);
         println!("Reading save game from {}", path.display());
         let mut file = File::open(&path).unwrap();
-        file.read_save_game(&data);
+        file.read_save_game(&mut data.zones).unwrap();
+
+        let mut rest = Vec::new();
+        let bytes_left = file.read_to_end(&mut rest).unwrap();
+        assert!(
+            bytes_left == 0,
+            "{} bytes left after reading save game!",
+            bytes_left
+        );
     }
 
     exit(1);

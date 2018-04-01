@@ -1,9 +1,10 @@
 use byteorder::{LittleEndian, ReadBytesExt};
+use my_byte_order::ByteOrderExt;
 use std::io::{self, Read, Result};
 
 pub trait ReadItemsExt: io::Read {
     fn read_tile_name(&mut self) -> Result<(i32, String)> {
-        let index = self.read_i16::<LittleEndian>().unwrap();
+        let index = self.read_i16_le().unwrap();
         if index == -1 {
             return Ok((index.into(), "".to_string()));
         }
@@ -18,7 +19,7 @@ pub trait ReadItemsExt: io::Read {
     }
 
     fn read_tile_names(&mut self) -> Result<()> {
-        self.read_u32::<LittleEndian>();
+        self.read_u32_le();
 
         loop {
             match self.read_tile_name().unwrap() {

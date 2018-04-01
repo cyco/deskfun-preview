@@ -1,4 +1,5 @@
 use byteorder::{LittleEndian, ReadBytesExt};
+use my_byte_order::ByteOrderExt;
 use std::io::{self, Result};
 
 pub enum HotspotType {
@@ -53,12 +54,12 @@ impl From<u32> for HotspotType {
 
 pub trait ReadHotspotExt: io::Read {
     fn read_hotspot(&mut self) -> Result<Hotspot> {
-        let hotspot_type = HotspotType::from(self.read_u32::<LittleEndian>().unwrap());
+        let hotspot_type = HotspotType::from(self.read_u32_le().unwrap());
 
-        let x = self.read_i16::<LittleEndian>().unwrap();
-        let y = self.read_i16::<LittleEndian>().unwrap();
-        let enabled = self.read_u16::<LittleEndian>().unwrap() != 0;
-        let argument = self.read_i16::<LittleEndian>().unwrap();
+        let x = self.read_i16_le().unwrap();
+        let y = self.read_i16_le().unwrap();
+        let enabled = self.read_u16_le().unwrap() != 0;
+        let argument = self.read_i16_le().unwrap();
 
         Ok(Hotspot {
             hotspot_type: hotspot_type,

@@ -1,4 +1,5 @@
 use byteorder::{LittleEndian, ReadBytesExt};
+use my_byte_order::ByteOrderExt;
 use std::io::{self, Read, Result};
 
 use super::action::*;
@@ -18,7 +19,7 @@ pub struct Zone {
 
 pub trait ReadZoneExt: io::Read {
     fn read_zones(&mut self) -> Result<Vec<Zone>> {
-        let count = self.read_u16::<LittleEndian>().unwrap();
+        let count = self.read_u16_le().unwrap();
         let mut zones = Vec::new();
 
         for n in 0..count {
@@ -29,9 +30,9 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_zone(&mut self) -> Result<Zone> {
-        let planet = self.read_u16::<LittleEndian>().unwrap();
-        let size = self.read_u32::<LittleEndian>().unwrap();
-        let index = self.read_u16::<LittleEndian>().unwrap();
+        let planet = self.read_u16_le().unwrap();
+        let size = self.read_u32_le().unwrap();
+        let index = self.read_u16_le().unwrap();
         let mut marker = String::new();
         self.take(4).read_to_string(&mut marker);
         assert!(
@@ -39,12 +40,12 @@ pub trait ReadZoneExt: io::Read {
             "Expected to find IZON category, found {} instead",
             marker
         );
-        let size2 = self.read_u32::<LittleEndian>().unwrap();
-        let width = self.read_u16::<LittleEndian>().unwrap();
-        let height = self.read_u16::<LittleEndian>().unwrap();
-        let ztype = self.read_u32::<LittleEndian>().unwrap();
-        let padding = self.read_u16::<LittleEndian>().unwrap();
-        let planet_again = self.read_u16::<LittleEndian>().unwrap();
+        let size2 = self.read_u32_le().unwrap();
+        let width = self.read_u16_le().unwrap();
+        let height = self.read_u16_le().unwrap();
+        let ztype = self.read_u32_le().unwrap();
+        let padding = self.read_u16_le().unwrap();
+        let planet_again = self.read_u16_le().unwrap();
         assert!(
             planet == planet_again,
             "Expected to find the same planet again"
@@ -53,7 +54,7 @@ pub trait ReadZoneExt: io::Read {
         self.take((3 * width * height * 2).into())
             .read_to_end(&mut tile_ids);
 
-        let hotspot_count = self.read_u16::<LittleEndian>().unwrap();
+        let hotspot_count = self.read_u16_le().unwrap();
         let mut hotspots = Vec::new();
         for _ in 0..hotspot_count {
             hotspots.push(self.read_hotspot()?);
@@ -64,7 +65,7 @@ pub trait ReadZoneExt: io::Read {
         self.read_izx3();
         self.read_izx4();
 
-        let action_count = self.read_u16::<LittleEndian>().unwrap();
+        let action_count = self.read_u16_le().unwrap();
         let mut actions = Vec::with_capacity(action_count.into());
         for _ in 0..action_count {
             actions.push(self.read_action()?);
@@ -88,21 +89,21 @@ pub trait ReadZoneExt: io::Read {
             "Expected to find IZAX category, found {} instead",
             marker
         );
-        let size = self.read_u32::<LittleEndian>().unwrap();
-        let unknown_count = self.read_u16::<LittleEndian>().unwrap();
+        let size = self.read_u32_le().unwrap();
+        let unknown_count = self.read_u16_le().unwrap();
 
-        let npc_count = self.read_u16::<LittleEndian>().unwrap();
+        let npc_count = self.read_u16_le().unwrap();
         let mut npcs = Vec::with_capacity(npc_count.into());
         for _ in 0..npc_count {
             npcs.push(self.read_npc().unwrap());
         }
-        let required_item_count = self.read_u16::<LittleEndian>().unwrap();
+        let required_item_count = self.read_u16_le().unwrap();
         for _ in 0..required_item_count {
-            let item_id = self.read_u16::<LittleEndian>().unwrap();
+            let item_id = self.read_u16_le().unwrap();
         }
-        let goal_item_count = self.read_u16::<LittleEndian>().unwrap();
+        let goal_item_count = self.read_u16_le().unwrap();
         for _ in 0..goal_item_count {
-            let item_id = self.read_u16::<LittleEndian>().unwrap();
+            let item_id = self.read_u16_le().unwrap();
         }
 
         Ok((npcs, ()))
@@ -116,10 +117,10 @@ pub trait ReadZoneExt: io::Read {
             "Expected to find IZX2 category, found {} instead",
             marker
         );
-        let size = self.read_u32::<LittleEndian>().unwrap();
-        let provided_item_count = self.read_u16::<LittleEndian>().unwrap();
+        let size = self.read_u32_le().unwrap();
+        let provided_item_count = self.read_u16_le().unwrap();
         for _ in 0..provided_item_count {
-            let item_id = self.read_u16::<LittleEndian>().unwrap();
+            let item_id = self.read_u16_le().unwrap();
         }
 
         Ok(())
@@ -133,10 +134,10 @@ pub trait ReadZoneExt: io::Read {
             "Expected to find IZAX category, found {} instead",
             marker
         );
-        let size = self.read_u32::<LittleEndian>().unwrap();
-        let puzzle_npc_count = self.read_u16::<LittleEndian>().unwrap();
+        let size = self.read_u32_le().unwrap();
+        let puzzle_npc_count = self.read_u16_le().unwrap();
         for _ in 0..puzzle_npc_count {
-            let npc_id = self.read_u16::<LittleEndian>().unwrap();
+            let npc_id = self.read_u16_le().unwrap();
         }
 
         Ok(())
@@ -150,8 +151,8 @@ pub trait ReadZoneExt: io::Read {
             "Expected to find IZAX category, found {} instead",
             marker
         );
-        let size = self.read_u32::<LittleEndian>().unwrap();
-        let unknown = self.read_u16::<LittleEndian>().unwrap();
+        let size = self.read_u32_le().unwrap();
+        let unknown = self.read_u16_le().unwrap();
 
         Ok(())
     }
