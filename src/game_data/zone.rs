@@ -8,6 +8,7 @@ use super::npc::*;
 pub const LAYERS: u8 = 3;
 
 pub struct Zone {
+    pub id: usize,
     pub width: u16,
     pub height: u16,
     pub hotspots: Vec<Hotspot>,
@@ -21,8 +22,7 @@ pub trait ReadZoneExt: io::Read {
         let mut zones = Vec::new();
 
         for n in 0..count {
-            let zone = self.read_zone().unwrap();
-            zones.push(zone);
+            zones.push(self.read_zone()?);
         }
 
         Ok(zones)
@@ -71,6 +71,7 @@ pub trait ReadZoneExt: io::Read {
         }
 
         Ok(Zone {
+            id: index as usize,
             width: width,
             height: height,
             hotspots: hotspots,
