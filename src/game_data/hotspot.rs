@@ -1,4 +1,3 @@
-use byteorder::{LittleEndian, ReadBytesExt};
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Result};
 

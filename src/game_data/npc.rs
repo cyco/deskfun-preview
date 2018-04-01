@@ -1,4 +1,3 @@
-use byteorder::{LittleEndian, ReadBytesExt};
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Result};
 
@@ -12,7 +11,7 @@ pub trait ReadNPCExt: io::Read {
         let unknown1 = self.read_i16_le().unwrap();
         let unknown2 = self.read_i32_le().unwrap();
         for _ in 0..0x20 {
-            self.read_i8().unwrap();
+            self.read_i8_le().unwrap();
         }
 
         Ok(NPC {})

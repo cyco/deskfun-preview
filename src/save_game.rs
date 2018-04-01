@@ -1,14 +1,8 @@
 use my_byte_order::ByteOrderExt;
-use std::borrow::*;
-use std::fs;
 use std::io;
-use std::io::prelude::*;
 use std::io::{Read, Result};
-use std::iter;
-use std::iter::*;
 use std::vec::*;
 
-use game_data::GameData;
 use game_data::hotspot::Hotspot;
 use game_data::hotspot::HotspotType;
 use game_data::zone;

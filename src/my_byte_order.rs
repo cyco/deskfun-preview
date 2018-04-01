@@ -1,8 +1,5 @@
 use byteorder::{LittleEndian, ReadBytesExt};
-use std::fs;
 use std::io;
-use std::io::Seek;
-use std::io::*;
 
 pub trait ByteOrderExt: ReadBytesExt {
     #[inline]
