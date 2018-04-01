@@ -6,7 +6,7 @@ pub struct Action {}
 pub trait ReadActionExt: io::Read {
     fn read_action(&mut self) -> Result<Action> {
         let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker);
+        self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IACT",
             "Expected to find IACT category, found {} instead",
@@ -34,7 +34,7 @@ pub trait ReadActionExt: io::Read {
         let text_length = self.read_u16_le()?;
         if text_length != 0 {
             let mut text = String::new();
-            self.take(text_length.into()).read_to_string(&mut text);
+            self.take(text_length.into()).read_to_string(&mut text)?;
         }
 
         Ok(())

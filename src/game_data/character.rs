@@ -17,7 +17,7 @@ pub trait ReadCharactersExt: io::Read {
         }
 
         let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker);
+        self.take(4).read_to_string(&mut marker)?;
         assert!(marker == "ICHA", "Expected category marker ICHA");
         let size = self.read_u32_le();
         let mut name = String::new();

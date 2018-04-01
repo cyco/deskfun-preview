@@ -6,10 +6,10 @@ pub trait ReadTileExt: io::Read {
         let size = self.read_u32_le()?;
         let count = size / (32 * 32 + 4);
 
-        for n in 0..count {
+        for _ in 0..count {
             let attributes = self.read_u32_le()?;
             let mut pixels = Vec::new();
-            self.take(32 * 32).read_to_end(&mut pixels);
+            self.take(32 * 32).read_to_end(&mut pixels)?;
         }
 
         Ok(())

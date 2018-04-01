@@ -33,7 +33,7 @@ pub trait ReadZoneExt: io::Read {
         let size = self.read_u32_le()?;
         let index = self.read_u16_le()?;
         let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker);
+        self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IZON",
             "Expected to find IZON category, found {} instead",
@@ -51,7 +51,7 @@ pub trait ReadZoneExt: io::Read {
         );
         let mut tile_ids = Vec::new();
         self.take((3 * width * height * 2).into())
-            .read_to_end(&mut tile_ids);
+            .read_to_end(&mut tile_ids)?;
 
         let hotspot_count = self.read_u16_le()?;
         let mut hotspots = Vec::new();
@@ -82,7 +82,7 @@ pub trait ReadZoneExt: io::Read {
 
     fn read_izax(&mut self) -> Result<(Vec<NPC>, ())> {
         let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker);
+        self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IZAX",
             "Expected to find IZAX category, found {} instead",
@@ -110,7 +110,7 @@ pub trait ReadZoneExt: io::Read {
 
     fn read_izx2(&mut self) -> Result<()> {
         let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker);
+        self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IZX2",
             "Expected to find IZX2 category, found {} instead",
@@ -127,7 +127,7 @@ pub trait ReadZoneExt: io::Read {
 
     fn read_izx3(&mut self) -> Result<()> {
         let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker);
+        self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IZX3",
             "Expected to find IZAX category, found {} instead",
@@ -144,7 +144,7 @@ pub trait ReadZoneExt: io::Read {
 
     fn read_izx4(&mut self) -> Result<()> {
         let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker);
+        self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IZX4",
             "Expected to find IZAX category, found {} instead",

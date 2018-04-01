@@ -9,7 +9,7 @@ pub trait ReadPuzzlesExt: io::Read {
         }
 
         let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker);
+        self.take(4).read_to_string(&mut marker)?;
         assert!(marker == "IPUZ", "Expected category marker IPUZ");
         let size = self.read_u32_le();
         let puzzle_type = self.read_u32_le();
@@ -20,7 +20,7 @@ pub trait ReadPuzzlesExt: io::Read {
         for n in 0..5 {
             let length = self.read_u16_le()?;
             let mut text = String::new();
-            self.take(length.into()).read_to_string(&mut text);
+            self.take(length.into()).read_to_string(&mut text)?;
         }
         let item_1 = self.read_u16_le();
         let item_2 = self.read_u16_le();

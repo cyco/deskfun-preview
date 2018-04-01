@@ -10,9 +10,9 @@ pub trait ReadItemsExt: io::Read {
 
         let mut name = String::new();
         let mut name_region = self.take(0x18);
-        name_region.read_to_string(&mut name);
+        name_region.read_to_string(&mut name)?;
         let mut garbage = Vec::new();
-        name_region.read_to_end(&mut garbage);
+        name_region.read_to_end(&mut garbage)?;
 
         Ok((index.into(), name.to_string()))
     }
