@@ -21,8 +21,8 @@ pub enum HotspotType {
 
 pub struct Hotspot {
     pub hotspot_type: HotspotType,
-    pub x: u16,
-    pub y: u16,
+    pub x: i16,
+    pub y: i16,
     pub enabled: bool,
     pub argument: i16,
 }
@@ -55,8 +55,8 @@ pub trait ReadHotspotExt: io::Read {
     fn read_hotspot(&mut self) -> Result<Hotspot> {
         let hotspot_type = HotspotType::from(self.read_u32::<LittleEndian>().unwrap());
 
-        let x = self.read_u16::<LittleEndian>().unwrap();
-        let y = self.read_u16::<LittleEndian>().unwrap();
+        let x = self.read_i16::<LittleEndian>().unwrap();
+        let y = self.read_i16::<LittleEndian>().unwrap();
         let enabled = self.read_u16::<LittleEndian>().unwrap() != 0;
         let argument = self.read_i16::<LittleEndian>().unwrap();
 
