@@ -3,7 +3,7 @@ use std::io::{self, Read, Result};
 
 pub trait ReadItemsExt: io::Read {
     fn read_tile_name(&mut self) -> Result<(i32, String)> {
-        let index = self.read_i16_le().unwrap();
+        let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), "".to_string()));
         }
@@ -21,7 +21,7 @@ pub trait ReadItemsExt: io::Read {
         self.read_u32_le();
 
         loop {
-            match self.read_tile_name().unwrap() {
+            match self.read_tile_name()? {
                 (-1, _) => break,
                 _ => (),
             }

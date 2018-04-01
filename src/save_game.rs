@@ -23,13 +23,13 @@ pub trait ReadSaveGameExt: ByteOrderExt {
 
         let on_dagobah = self.read_u32_le()? != 0;
 
-        let puzzle_id_count_1 = self.read_u16_le().unwrap();
+        let puzzle_id_count_1 = self.read_u16_le()?;
         let mut puzzle_ids_1 = Vec::with_capacity(puzzle_id_count_1.into());
         for _ in 0..puzzle_id_count_1 {
             puzzle_ids_1.push(self.read_i16_le()?);
         }
 
-        let puzzle_id_count_2 = self.read_u16_le().unwrap();
+        let puzzle_id_count_2 = self.read_u16_le()?;
         let mut puzzle_ids_2 = Vec::with_capacity(puzzle_id_count_2.into());
         for _ in 0..puzzle_id_count_2 {
             puzzle_ids_2.push(self.read_i16_le()?);
@@ -38,7 +38,7 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         self.read_dagobah(&mut zones);
         self.read_world(&mut zones);
 
-        let inventory_count = self.read_u32_le().unwrap();
+        let inventory_count = self.read_u32_le()?;
         let mut inventory_item_ids = Vec::with_capacity(inventory_count as usize);
         for _ in 0..inventory_count {
             inventory_item_ids.push(self.read_i16_le()?);
@@ -171,8 +171,8 @@ pub trait ReadSaveGameExt: ByteOrderExt {
                     }
                 }
 
-                let zone_id = self.read_i16_le().unwrap();
-                let visited = self.read_u32_le().unwrap() != 0;
+                let zone_id = self.read_i16_le()?;
+                let visited = self.read_u32_le()? != 0;
                 assert!(
                     zone_id == door,
                     "Expected door to lead to zone {} instead of {}",

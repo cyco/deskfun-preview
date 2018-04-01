@@ -3,7 +3,7 @@ use std::io::{self, Result};
 
 pub trait ReadEndExt: io::Read {
     fn read_end(&mut self) -> Result<()> {
-        self.read_u32_le().unwrap();
+        self.read_u32_le()?;
         Ok(())
     }
 }

@@ -53,12 +53,12 @@ impl From<u32> for HotspotType {
 
 pub trait ReadHotspotExt: io::Read {
     fn read_hotspot(&mut self) -> Result<Hotspot> {
-        let hotspot_type = HotspotType::from(self.read_u32_le().unwrap());
+        let hotspot_type = HotspotType::from(self.read_u32_le()?);
 
-        let x = self.read_i16_le().unwrap();
-        let y = self.read_i16_le().unwrap();
-        let enabled = self.read_u16_le().unwrap() != 0;
-        let argument = self.read_i16_le().unwrap();
+        let x = self.read_i16_le()?;
+        let y = self.read_i16_le()?;
+        let enabled = self.read_u16_le()? != 0;
+        let argument = self.read_i16_le()?;
 
         Ok(Hotspot {
             hotspot_type: hotspot_type,

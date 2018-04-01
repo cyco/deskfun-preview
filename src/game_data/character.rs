@@ -11,7 +11,7 @@ pub trait ReadCharactersExt: io::Read {
     }
 
     fn read_character(&mut self) -> Result<(i32, ())> {
-        let index = self.read_i16_le().unwrap();
+        let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), ()));
         }
@@ -34,13 +34,13 @@ pub trait ReadCharactersExt: io::Read {
     }
 
     fn read_character_weapon(&mut self) -> Result<(i32, ())> {
-        let index = self.read_i16_le().unwrap();
+        let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), ()));
         }
 
-        let reference = self.read_u16_le().unwrap();
-        let health = self.read_u16_le().unwrap();
+        let reference = self.read_u16_le()?;
+        let health = self.read_u16_le()?;
 
         Ok((index.into(), ()))
     }
@@ -49,7 +49,7 @@ pub trait ReadCharactersExt: io::Read {
         self.read_u32_le();
 
         loop {
-            match self.read_character_weapon().unwrap() {
+            match self.read_character_weapon()? {
                 (-1, _) => break,
                 _ => (),
             }
@@ -62,7 +62,7 @@ pub trait ReadCharactersExt: io::Read {
         self.read_u32_le();
 
         loop {
-            match self.read_character_auxiliary().unwrap() {
+            match self.read_character_auxiliary()? {
                 (-1, _) => break,
                 _ => (),
             }
@@ -72,12 +72,12 @@ pub trait ReadCharactersExt: io::Read {
     }
 
     fn read_character_auxiliary(&mut self) -> Result<(i32, ())> {
-        let index = self.read_i16_le().unwrap();
+        let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), ()));
         }
 
-        let damage = self.read_u16_le().unwrap();
+        let damage = self.read_u16_le()?;
 
         Ok((index.into(), ()))
     }
@@ -86,7 +86,7 @@ pub trait ReadCharactersExt: io::Read {
         self.read_u32_le();
 
         loop {
-            match self.read_character().unwrap() {
+            match self.read_character()? {
                 (-1, _) => break,
                 _ => (),
             }

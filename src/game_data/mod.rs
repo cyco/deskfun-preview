@@ -43,7 +43,7 @@ pub trait ReadGameDataExt: io::Read {
                 "SNDS" => self.read_sounds(),
                 "TILE" => self.read_tiles(),
                 "ZONE" => {
-                    zones = self.read_zones().unwrap();
+                    zones = self.read_zones()?;
                     Ok(())
                 }
                 "PUZ2" => self.read_puzzles(),

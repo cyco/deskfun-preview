@@ -12,13 +12,13 @@ pub trait ReadActionExt: io::Read {
             "Expected to find IACT category, found {} instead",
             marker
         );
-        let size = self.read_u32_le().unwrap();
-        let condition_count = self.read_u16_le().unwrap();
+        let size = self.read_u32_le()?;
+        let condition_count = self.read_u16_le()?;
         for _ in 0..condition_count {
             self.read_action_item();
         }
 
-        let instruction_count = self.read_u16_le().unwrap();
+        let instruction_count = self.read_u16_le()?;
         for _ in 0..instruction_count {
             self.read_action_item();
         }
@@ -27,11 +27,11 @@ pub trait ReadActionExt: io::Read {
     }
 
     fn read_action_item(&mut self) -> Result<()> {
-        let opcode = self.read_u16_le().unwrap();
+        let opcode = self.read_u16_le()?;
         for _ in 0..5 {
-            self.read_i16_le().unwrap();
+            self.read_i16_le()?;
         }
-        let text_length = self.read_u16_le().unwrap();
+        let text_length = self.read_u16_le()?;
         if text_length != 0 {
             let mut text = String::new();
             self.take(text_length.into()).read_to_string(&mut text);
