@@ -4,7 +4,7 @@ use std::io;
 use std::io::Seek;
 use std::io::*;
 
-pub trait ByteOrderExt: ReadBytesExt + Seek {
+pub trait ByteOrderExt: ReadBytesExt {
     #[inline]
     fn read_i8_le(&mut self) -> io::Result<i8> {
         self.read_i8()
@@ -36,4 +36,4 @@ pub trait ByteOrderExt: ReadBytesExt + Seek {
     }
 }
 
-impl<R: ReadBytesExt + ?Sized + Seek> ByteOrderExt for R {}
+impl<R: ReadBytesExt + ?Sized> ByteOrderExt for R {}
