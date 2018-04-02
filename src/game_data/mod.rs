@@ -19,17 +19,19 @@ use self::item::ReadItemsExt;
 use self::puzzle::ReadPuzzlesExt;
 use self::setup_image::ReadSetupImageExt;
 use self::sounds::ReadSoundExt;
-use self::tile::ReadTileExt;
+use self::tile::{ReadTileExt, Tile};
 use self::version::ReadVersionExt;
 use self::zone::*;
 
 pub struct GameData {
     pub zones: Vec<Zone>,
+    pub tiles: Vec<Tile>,
 }
 
 pub trait ReadGameDataExt: io::Read {
     fn read_game_data(&mut self) -> Result<GameData> {
         let mut zones = Vec::new();
+        let mut tiles = Vec::new();
 
         loop {
             let mut category_name = String::new();
@@ -41,7 +43,10 @@ pub trait ReadGameDataExt: io::Read {
                 "VERS" => self.read_version(),
                 "STUP" => self.read_setup_image(),
                 "SNDS" => self.read_sounds(),
-                "TILE" => self.read_tiles(),
+                "TILE" => {
+                    tiles = self.read_tiles()?;
+                    Ok(())
+                }
                 "ZONE" => {
                     zones = self.read_zones()?;
                     Ok(())
@@ -59,7 +64,7 @@ pub trait ReadGameDataExt: io::Read {
             };
         }
 
-        Ok(GameData { zones: zones })
+        Ok(GameData { zones: zones, tiles: tiles })
     }
 }
 
