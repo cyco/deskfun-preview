@@ -1,6 +1,7 @@
 use my_byte_order::ByteOrderExt;
 use std::io;
 use std::iter;
+use std::mem;
 
 pub const WIDTH: usize = 32;
 pub const HEIGHT: usize = 32;
@@ -15,12 +16,13 @@ pub trait ReadTileExt: io::Read {
         let size = self.read_u32_le()? as usize;
         let count = size / (WIDTH * HEIGHT + 4);
 
-        iter::repeat(count)
+        iter::repeat(0)
+            .take(count)
             .map(|_| -> io::Result<Tile> {
                 Ok(Tile {
                     attributes: self.read_u32_le()?,
                     pixels: {
-                        let mut pixels = [0; WIDTH * HEIGHT];
+                        let mut pixels: [u8; WIDTH * HEIGHT] = [0 as u8; WIDTH * HEIGHT];
                         self.read_exact(&mut pixels)?;
                         pixels
                     },
