@@ -1,13 +1,20 @@
 use super::game_data::tile::{Tile, HEIGHT, WIDTH};
 use super::palette::{Color, Palette};
 
-struct TileRenderer {
+pub struct TileRenderer {
     palette: Palette,
     tiles: Vec<Tile>,
 }
 
 impl TileRenderer {
-    fn render(&mut self, id: u16) -> [u8; WIDTH * HEIGHT * 4] {
+    pub fn new(tiles: Vec<Tile>, palette: Palette) -> TileRenderer {
+        TileRenderer {
+            palette: palette,
+            tiles: tiles,
+        }
+    }
+
+    pub fn render(&mut self, id: u16) -> [u8; WIDTH * HEIGHT * 4] {
         let pixels = self.tiles[id as usize].pixels;
         let mut result = [0; WIDTH * HEIGHT * 4];
 
