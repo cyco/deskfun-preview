@@ -57,11 +57,11 @@ pub trait ReadGameDataExt: io::Read {
                 "CAUX" => self.read_character_auxiliaries(),
                 "TNAM" => self.read_tile_names(),
                 "ENDF" => {
-                    self.read_end();
+                    self.read_end()?;
                     break;
                 }
                 _ => panic!("Unknown category {} encountered", category_name),
-            };
+            }?;
         }
 
         Ok(GameData { zones: zones, tiles: tiles })
