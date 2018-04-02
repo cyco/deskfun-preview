@@ -138,7 +138,6 @@ pub trait ReadSaveGameExt: ByteOrderExt {
             self.read_room(zone_id, visited, &mut zones);
         }
 
-        println!("read_world_details_done");
         Ok(())
     }
 
@@ -207,7 +206,6 @@ pub trait ReadSaveGameExt: ByteOrderExt {
     }
 
     fn read_zone(&mut self, zone: &mut Zone, visited: bool) -> Result<()> {
-        println!("_readZone start");
         if visited {
             let counter = self.read_u32_le()?;
             let random = self.read_u32_le()?;
@@ -279,18 +277,15 @@ pub trait ReadSaveGameExt: ByteOrderExt {
             }
         }
 
-        println!("_readZone end");
         Ok(())
     }
 
     fn read_hotspot(&mut self) -> Result<Hotspot> {
-        println!("_readHotspot start");
         let enabled = self.read_u16_le()? != 0;
         let argument = self.read_i16_le()?;
         let hotspot_type = HotspotType::from(self.read_u32_le()?);
         let x = self.read_i16_le()?;
         let y = self.read_i16_le()?;
-        println!("_readHotspot end");
         Ok(Hotspot {
             enabled: enabled,
             argument: argument,
@@ -301,7 +296,6 @@ pub trait ReadSaveGameExt: ByteOrderExt {
     }
 
     fn read_npc(&mut self) -> Result<()> {
-        println!("read_npc start");
         let character_id = self.read_i16_le()?;
         let x = self.read_i16_le()?;
         let y = self.read_i16_le()?;
@@ -332,7 +326,6 @@ pub trait ReadSaveGameExt: ByteOrderExt {
             self.read_u32_le()?;
         }
 
-        println!("read_npc end");
         Ok(())
     }
 }
