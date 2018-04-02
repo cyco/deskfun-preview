@@ -8,8 +8,12 @@ use game_data::hotspot::HotspotType;
 use game_data::zone;
 use game_data::zone::Zone;
 
+pub struct SaveGame {
+
+}
+
 pub trait ReadSaveGameExt: ByteOrderExt {
-    fn read_save_game(&mut self, mut zones: &mut Vec<Zone>) -> Result<()> {
+    fn read_save_game(&mut self, mut zones: &mut Vec<Zone>) -> Result<SaveGame> {
         let mut file_magic = String::new();
         self.take(9).read_to_string(&mut file_magic)?;
         assert!(
@@ -75,7 +79,8 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         let goal_puzzle = self.read_u32_le()?;
         let goal_puzzle_again = self.read_u32_le()?;
 
-        Ok(())
+        Ok(SaveGame {
+        })
     }
 
     fn read_dagobah(&mut self, mut zones: &mut Vec<Zone>) -> Result<()> {
