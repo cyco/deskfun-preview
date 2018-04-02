@@ -7,9 +7,13 @@ use game_data::hotspot::Hotspot;
 use game_data::hotspot::HotspotType;
 use game_data::zone;
 use game_data::zone::Zone;
+use game_data::tile;
+
+pub struct Point(usize, usize);
 
 pub struct SaveGame {
-
+    current_zone_id: u16,
+    position_on_zone: Point
 }
 
 pub trait ReadSaveGameExt: ByteOrderExt {
@@ -63,8 +67,8 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         let blaster_ammo = self.read_i16_le()?;
         let blaster_rifle_ammo = self.read_i16_le()?;
 
-        let pos_x_on_zone = self.read_u32_le()? as f64 / 32.0;
-        let pos_y_on_zone = self.read_u32_le()? as f64 / 32.0;
+        let pos_x_on_zone = self.read_u32_le()? as usize / tile::WIDTH;
+        let pos_y_on_zone = self.read_u32_le()? as usize / tile::HEIGHT;
 
         let damage_taken = self.read_u32_le()?;
         let lives_left = self.read_u32_le()?;
@@ -80,6 +84,8 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         let goal_puzzle_again = self.read_u32_le()?;
 
         Ok(SaveGame {
+            current_zone_id: current_zone_id,
+            position_on_zone: Point(pos_x_on_zone as usize, pos_y_on_zone as usize)
         })
     }
 
