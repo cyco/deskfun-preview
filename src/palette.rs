@@ -11,14 +11,14 @@ pub enum Color {
 }
 
 impl Palette {
-    fn new(input: &mut io::Read) -> io::Result<Palette> {
+    pub fn new(input: &mut io::Read) -> io::Result<Palette> {
         let mut buffer = [0 as u8; 0x100];
         input.read_exact(&mut buffer)?;
 
         Ok(Palette { data: buffer })
     }
 
-    fn at(&self, index: u8) -> Color {
+    pub fn at(&self, index: u8) -> Color {
         match index {
             0 => Color::Transparent,
             i => Color::RGB(4 * i + 2, 4 * i + 1, 4 * i + 0),
