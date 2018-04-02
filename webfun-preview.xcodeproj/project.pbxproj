@@ -7,16 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		831AD9632071888000DBAC7C /* yoda.pal in Resources */ = {isa = PBXBuildFile; fileRef = 83243FDC2071297F00C6B4AE /* yoda.pal */; };
+		831AD9642071888000DBAC7C /* yoda.data in Resources */ = {isa = PBXBuildFile; fileRef = 83243FE12071297F00C6B4AE /* yoda.data */; };
+		831AD9652071888000DBAC7C /* indy.pal in Resources */ = {isa = PBXBuildFile; fileRef = 83243FE22071297F00C6B4AE /* indy.pal */; };
 		83243FCE2071293000C6B4AE /* GenerateThumbnailForURL.c in Sources */ = {isa = PBXBuildFile; fileRef = 83243FCD2071293000C6B4AE /* GenerateThumbnailForURL.c */; };
 		83243FD02071293000C6B4AE /* GeneratePreviewForURL.c in Sources */ = {isa = PBXBuildFile; fileRef = 83243FCF2071293000C6B4AE /* GeneratePreviewForURL.c */; };
 		83243FD22071293000C6B4AE /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 83243FD12071293000C6B4AE /* main.c */; };
-		83243FE42071297F00C6B4AE /* yoda.pal in Resources */ = {isa = PBXBuildFile; fileRef = 83243FDC2071297F00C6B4AE /* yoda.pal */; };
-		83243FE52071297F00C6B4AE /* sample-3.wld in Resources */ = {isa = PBXBuildFile; fileRef = 83243FDE2071297F00C6B4AE /* sample-3.wld */; };
-		83243FE62071297F00C6B4AE /* sample-2.wld in Resources */ = {isa = PBXBuildFile; fileRef = 83243FDF2071297F00C6B4AE /* sample-2.wld */; };
-		83243FE72071297F00C6B4AE /* sample-1.wld in Resources */ = {isa = PBXBuildFile; fileRef = 83243FE02071297F00C6B4AE /* sample-1.wld */; };
-		83243FE82071297F00C6B4AE /* yoda.data in Resources */ = {isa = PBXBuildFile; fileRef = 83243FE12071297F00C6B4AE /* yoda.data */; };
-		83243FE92071297F00C6B4AE /* indy.pal in Resources */ = {isa = PBXBuildFile; fileRef = 83243FE22071297F00C6B4AE /* indy.pal */; };
-		83243FEA2071297F00C6B4AE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 83243FE32071297F00C6B4AE /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +46,7 @@
 				83243FDB2071297F00C6B4AE /* assets */,
 				83243FCC2071293000C6B4AE /* src */,
 				83243FCB2071293000C6B4AE /* Products */,
+				832440092071547D00C6B4AE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -93,6 +90,13 @@
 			path = "save-games";
 			sourceTree = "<group>";
 		};
+		832440092071547D00C6B4AE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -110,6 +114,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 83243FD62071293000C6B4AE /* Build configuration list for PBXNativeTarget "webfun-preview" */;
 			buildPhases = (
+				832440082071541A00C6B4AE /* Build Library */,
+				831AD96620718A9600DBAC7C /* Fetch Game Data */,
 				83243FC52071293000C6B4AE /* Sources */,
 				83243FC62071293000C6B4AE /* Frameworks */,
 				83243FC72071293000C6B4AE /* Headers */,
@@ -160,17 +166,44 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83243FE42071297F00C6B4AE /* yoda.pal in Resources */,
-				83243FE72071297F00C6B4AE /* sample-1.wld in Resources */,
-				83243FE82071297F00C6B4AE /* yoda.data in Resources */,
-				83243FE52071297F00C6B4AE /* sample-3.wld in Resources */,
-				83243FE62071297F00C6B4AE /* sample-2.wld in Resources */,
-				83243FE92071297F00C6B4AE /* indy.pal in Resources */,
-				83243FEA2071297F00C6B4AE /* Info.plist in Resources */,
+				831AD9632071888000DBAC7C /* yoda.pal in Resources */,
+				831AD9642071888000DBAC7C /* yoda.data in Resources */,
+				831AD9652071888000DBAC7C /* indy.pal in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		831AD96620718A9600DBAC7C /* Fetch Game Data */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Fetch Game Data";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "";
+		};
+		832440082071541A00C6B4AE /* Build Library */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build Library";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "if [[ \"$CONFIGURATION\" == \"Debug\" ]]; then\n    $HOME/.cargo/bin/cargo build\nelse\n    $HOME/.cargo/bin/cargo build --release\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		83243FC52071293000C6B4AE /* Sources */ = {
@@ -302,7 +335,12 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = assets/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
-				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.webfun-preview";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/target/debug",
+				);
+				OTHER_LDFLAGS = "-lwebfun_preview";
+				PRODUCT_BUNDLE_IDENTIFIER = de.ccl.webfun.qlgenerator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = qlgenerator;
 			};
@@ -315,7 +353,12 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = assets/Info.plist;
 				INSTALL_PATH = /Library/QuickLook;
-				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.webfun-preview";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/target/release",
+				);
+				OTHER_LDFLAGS = "-lwebfun_preview";
+				PRODUCT_BUNDLE_IDENTIFIER = de.ccl.webfun.qlgenerator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = qlgenerator;
 			};
