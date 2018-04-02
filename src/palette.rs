@@ -1,8 +1,7 @@
 use std::io;
-use std::ops::Index;
 
 pub struct Palette {
-    data: [u8; 0x100],
+    data: [u8; 0x400],
 }
 
 pub enum Color {
@@ -12,16 +11,20 @@ pub enum Color {
 
 impl Palette {
     pub fn new(input: &mut io::Read) -> io::Result<Palette> {
-        let mut buffer = [0 as u8; 0x100];
+        let mut buffer = [0; 0x400];
         input.read_exact(&mut buffer)?;
 
         Ok(Palette { data: buffer })
     }
 
     pub fn at(&self, index: u8) -> Color {
-        match index {
+        match index as usize {
             0 => Color::Transparent,
-            i => Color::RGB(4 * i + 2, 4 * i + 1, 4 * i + 0),
+            i => Color::RGB(
+                self.data[4 * i + 2],
+                self.data[4 * i + 1],
+                self.data[4 * i + 0],
+            ),
         }
     }
 }
