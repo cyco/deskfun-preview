@@ -14,6 +14,8 @@ pub enum OSStatus {
     no_error = 0,
 }
 
+mod point;
+
 mod game_type;
 use game_type::*;
 

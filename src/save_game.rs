@@ -8,8 +8,7 @@ use game_data::hotspot::HotspotType;
 use game_data::zone;
 use game_data::zone::Zone;
 use game_data::tile;
-
-pub struct Point(usize, usize);
+use super::point::Point;
 
 pub struct SaveGame {
     current_zone_id: u16,
