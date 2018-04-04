@@ -72,7 +72,7 @@ pub extern "C" fn generate_thumbnail(
     };
 
     let renderer = ZoneRenderer::new(game_data, palette);
-    let result = renderer.render(game.current_zone_id, Point(0,0));
+    let result = renderer.render(game.current_zone_id, game.position_on_zone);
 
     let mut buffer = Vec::new();
     {

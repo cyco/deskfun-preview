@@ -3,16 +3,16 @@ use std::io;
 use std::io::{Read, Result};
 use std::vec::*;
 
+use super::point::Point;
 use game_data::hotspot::Hotspot;
 use game_data::hotspot::HotspotType;
+use game_data::tile;
 use game_data::zone;
 use game_data::zone::Zone;
-use game_data::tile;
-use super::point::Point;
 
 pub struct SaveGame {
     pub current_zone_id: u16,
-    pub position_on_zone: Point
+    pub position_on_zone: Point,
 }
 
 pub trait ReadSaveGameExt: ByteOrderExt {
@@ -82,9 +82,11 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         let goal_puzzle = self.read_u32_le()?;
         let goal_puzzle_again = self.read_u32_le()?;
 
+        let point = Point(pos_x_on_zone as i64, pos_y_on_zone as i64);
+
         Ok(SaveGame {
             current_zone_id: current_zone_id,
-            position_on_zone: Point(pos_x_on_zone as usize, pos_y_on_zone as usize)
+            position_on_zone: point,
         })
     }
 
