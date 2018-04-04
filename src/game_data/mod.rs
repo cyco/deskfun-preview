@@ -1,4 +1,4 @@
-use std::io::{self, Read, Result};
+use std::io::{self, Read};
 
 pub mod action;
 pub mod character;
@@ -24,6 +24,8 @@ use self::version::ReadVersionExt;
 use self::zone::*;
 use super::game_type::GameType;
 
+use elapsed::measure_time;
+
 pub struct GameData {
     pub game_type: GameType,
     pub zones: Vec<Zone>,
@@ -31,7 +33,7 @@ pub struct GameData {
 }
 
 pub trait ReadGameDataExt: io::Read {
-    fn read_game_data(&mut self) -> Result<GameData> {
+    fn read_game_data(&mut self) -> io::Result<GameData> {
         let mut zones = Vec::new();
         let mut tiles = Vec::new();
 
@@ -41,29 +43,40 @@ pub trait ReadGameDataExt: io::Read {
                 .read_to_string(&mut category_name)
                 .expect("Unable to read category name");
 
-            match category_name.as_ref() {
-                "VERS" => self.read_version(),
-                "STUP" => self.read_setup_image(),
-                "SNDS" => self.read_sounds(),
-                "TILE" => {
-                    tiles = self.read_tiles()?;
-                    Ok(())
-                }
-                "ZONE" => {
-                    zones = self.read_zones()?;
-                    Ok(())
-                }
-                "PUZ2" => self.read_puzzles(),
-                "CHAR" => self.read_characters(),
-                "CHWP" => self.read_character_weapons(),
-                "CAUX" => self.read_character_auxiliaries(),
-                "TNAM" => self.read_tile_names(),
-                "ENDF" => {
-                    self.read_end()?;
-                    break;
-                }
-                _ => panic!("Unknown category {} encountered", category_name),
-            }?;
+            let (elapsed, result) = measure_time(|| -> io::Result<u8> {
+                let _ = match category_name.as_ref() {
+                    "VERS" => self.read_version(),
+                    "STUP" => self.read_setup_image(),
+                    "SNDS" => self.read_sounds(),
+                    "TILE" => {
+                        tiles = self.read_tiles()?;
+                        Ok(())
+                    }
+                    "ZONE" => {
+                        zones = self.read_zones()?;
+                        Ok(())
+                    }
+                    "PUZ2" => self.read_puzzles(),
+                    "CHAR" => self.read_characters(),
+                    "CHWP" => self.read_character_weapons(),
+                    "CAUX" => self.read_character_auxiliaries(),
+                    "TNAM" => self.read_tile_names(),
+                    "ENDF" => {
+                        self.read_end()?;
+                        return Ok(1);
+                    }
+                    _ => panic!("Unknown category {} encountered", category_name),
+                }?;
+
+                Ok(0)
+            });
+            
+            println!("read {} in {}", category_name, elapsed);
+
+            match result {
+                Ok(1) => break,
+                _ => (),
+            };
         }
 
         Ok(GameData {

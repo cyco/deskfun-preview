@@ -32,9 +32,9 @@ impl Zone {
 pub trait ReadZoneExt: io::Read {
     fn read_zones(&mut self) -> Result<Vec<Zone>> {
         let count = self.read_u16_le()?;
-        let mut zones = Vec::new();
+        let mut zones = Vec::with_capacity(count as usize);
 
-        for n in 0..count {
+        for _ in 0..count {
             zones.push(self.read_zone()?);
         }
 
@@ -45,7 +45,7 @@ pub trait ReadZoneExt: io::Read {
         let planet = self.read_u16_le()?;
         let size = self.read_u32_le()?;
         let index = self.read_u16_le()?;
-        let mut marker = String::new();
+        let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IZON",
@@ -63,11 +63,10 @@ pub trait ReadZoneExt: io::Read {
             "Expected to find the same planet again"
         );
         let mut tile_ids = vec![0; 3 * width as usize * height as usize];
-        self.take(3 * width as u64 * height as u64 * 2)
-            .read_i16_le_into(&mut tile_ids)?;
+        self.read_i16_le_into(&mut tile_ids)?;
 
         let hotspot_count = self.read_u16_le()?;
-        let mut hotspots = Vec::new();
+        let mut hotspots = Vec::with_capacity(hotspot_count as usize);
         for _ in 0..hotspot_count {
             hotspots.push(self.read_hotspot()?);
         }
@@ -95,7 +94,7 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_izax(&mut self) -> Result<(Vec<NPC>, ())> {
-        let mut marker = String::new();
+        let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IZAX",
@@ -110,20 +109,20 @@ pub trait ReadZoneExt: io::Read {
         for _ in 0..npc_count {
             npcs.push(self.read_npc()?);
         }
+
         let required_item_count = self.read_u16_le()?;
-        for _ in 0..required_item_count {
-            let item_id = self.read_u16_le()?;
-        }
+        let mut required_item_ids = vec![0 as u16; required_item_count as usize];
+        self.read_u16_le_into(&mut required_item_ids)?;
+
         let goal_item_count = self.read_u16_le()?;
-        for _ in 0..goal_item_count {
-            let item_id = self.read_u16_le()?;
-        }
+        let mut goal_item_ids = vec![0 as u16; goal_item_count as usize];
+        self.read_u16_le_into(&mut goal_item_ids)?;
 
         Ok((npcs, ()))
     }
 
     fn read_izx2(&mut self) -> Result<()> {
-        let mut marker = String::new();
+        let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IZX2",
@@ -132,15 +131,14 @@ pub trait ReadZoneExt: io::Read {
         );
         let size = self.read_u32_le()?;
         let provided_item_count = self.read_u16_le()?;
-        for _ in 0..provided_item_count {
-            let item_id = self.read_u16_le()?;
-        }
+        let mut provided_item_ids = vec![0 as u16; provided_item_count as usize];
+        self.read_u16_le_into(&mut provided_item_ids)?;
 
         Ok(())
     }
 
     fn read_izx3(&mut self) -> Result<()> {
-        let mut marker = String::new();
+        let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IZX3",
@@ -149,15 +147,14 @@ pub trait ReadZoneExt: io::Read {
         );
         let size = self.read_u32_le()?;
         let puzzle_npc_count = self.read_u16_le()?;
-        for _ in 0..puzzle_npc_count {
-            let npc_id = self.read_u16_le()?;
-        }
+        let mut puzzle_npc_ids = vec![0 as u16; puzzle_npc_count as usize];
+        self.read_u16_le_into(&mut puzzle_npc_ids)?;
 
         Ok(())
     }
 
     fn read_izx4(&mut self) -> Result<()> {
-        let mut marker = String::new();
+        let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IZX4",

@@ -5,7 +5,7 @@ pub struct Action {}
 
 pub trait ReadActionExt: io::Read {
     fn read_action(&mut self) -> Result<Action> {
-        let mut marker = String::new();
+        let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
             marker == "IACT",
@@ -28,12 +28,12 @@ pub trait ReadActionExt: io::Read {
 
     fn read_action_item(&mut self) -> Result<()> {
         let opcode = self.read_u16_le()?;
-        for _ in 0..5 {
-            self.read_i16_le()?;
-        }
+        let mut arguments = [0 as i16; 5];
+        self.read_i16_le_into(&mut arguments)?;
+
         let text_length = self.read_u16_le()?;
         if text_length != 0 {
-            let mut text = String::new();
+            let mut text = String::with_capacity(text_length as usize);
             self.take(text_length.into()).read_to_string(&mut text)?;
         }
 

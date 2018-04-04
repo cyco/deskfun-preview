@@ -23,7 +23,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
     CFStringRef bundlePath = CFURLCopyFileSystemPath(bundleURL, kCFURLPOSIXPathStyle);
     
     const char * bundle_path = CFStringGetCStringPtr(bundlePath, kCFStringEncodingUTF8);
-    const char * cpath = CFStringGetCStringPtr(path, kCFStringEncodingUTF8);
+    const  char * cpath = CFStringGetCStringPtr(path, kCFStringEncodingUTF8);
     
     size_t length = 0;
     uint8 *buffer = NULL;

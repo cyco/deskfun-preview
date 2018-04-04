@@ -10,9 +10,9 @@ pub trait ReadNPCExt: io::Read {
         let y = self.read_u16_le()?;
         let unknown1 = self.read_i16_le()?;
         let unknown2 = self.read_i32_le()?;
-        for _ in 0..0x20 {
-            self.read_i8_le()?;
-        }
+
+        let mut unknown = vec!(0 as u8; 0x20);
+        self.read_exact(&mut unknown)?;
 
         Ok(NPC {})
     }

@@ -15,20 +15,20 @@ pub trait ReadTileExt: io::Read {
     fn read_tiles(&mut self) -> io::Result<Vec<Tile>> {
         let size = self.read_u32_le()? as usize;
         let count = size / (WIDTH * HEIGHT + 4);
+        let mut result = Vec::with_capacity(count);
 
-        iter::repeat(0)
-            .take(count)
-            .map(|_| -> io::Result<Tile> {
-                Ok(Tile {
-                    attributes: self.read_u32_le()?,
-                    pixels: {
-                        let mut pixels: [u8; WIDTH * HEIGHT] = [0 as u8; WIDTH * HEIGHT];
-                        self.read_exact(&mut pixels)?;
-                        pixels
-                    },
-                })
-            })
-            .collect()
+        for _ in 0..count {
+            result.push(Tile {
+                attributes: self.read_u32_le()?,
+                pixels: {
+                    let mut pixels = [0 as u8; WIDTH * HEIGHT];
+                    self.read_exact(&mut pixels)?;
+                    pixels
+                },
+            });
+        }
+
+        Ok(result)
     }
 }
 

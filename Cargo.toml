@@ -9,3 +9,4 @@ crate-type = ["staticlib"]
 [dependencies]
 byteorder = "*"
 image = "*"
+elapsed = "*"

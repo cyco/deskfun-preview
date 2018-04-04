@@ -8,7 +8,7 @@ pub trait ReadItemsExt: io::Read {
             return Ok((index.into(), "".to_string()));
         }
 
-        let mut name = String::new();
+        let mut name = String::with_capacity(0x18);
         let mut name_region = self.take(0x18);
         name_region.read_to_string(&mut name)?;
         let mut garbage = Vec::new();
