@@ -22,8 +22,10 @@ use self::sounds::ReadSoundExt;
 use self::tile::{ReadTileExt, Tile};
 use self::version::ReadVersionExt;
 use self::zone::*;
+use super::game_type::GameType;
 
 pub struct GameData {
+    pub game_type: GameType,
     pub zones: Vec<Zone>,
     pub tiles: Vec<Tile>,
 }
@@ -64,7 +66,11 @@ pub trait ReadGameDataExt: io::Read {
             }?;
         }
 
-        Ok(GameData { zones: zones, tiles: tiles })
+        Ok(GameData {
+            game_type: GameType::Yoda,
+            zones: zones,
+            tiles: tiles,
+        })
     }
 }
 
