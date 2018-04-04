@@ -11,7 +11,6 @@ pub enum OSStatus {
 }
 
 mod point;
-use point::Point;
 
 mod game_type;
 use game_type::*;
@@ -44,13 +43,6 @@ pub extern "C" fn generate_thumbnail(
     let data_path = unsafe { path::Path::new(CStr::from_ptr(raw_bundle_path).to_str().unwrap()) };
     let game_path = unsafe { path::Path::new(CStr::from_ptr(raw_game_path).to_str().unwrap()) };
     let game_type = identify_save_game_type(game_path).expect("Save game is not valid!");
-
-    println!(
-        "data path: {}",
-        build_game_data_path(&data_path, &game_type)
-            .as_path()
-            .display()
-    );
 
     let mut game_data = {
         let path = build_game_data_path(&data_path, &game_type);
