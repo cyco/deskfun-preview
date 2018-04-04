@@ -1,20 +1,17 @@
 use std::ffi::CStr;
 use std::fs;
-use std::fs::File;
-use std::fs::*;
-use std::io::Write;
-use std::io::prelude::*;
 use std::os::raw::c_char;
 use std::path;
 
-extern crate image;
 extern crate byteorder;
+extern crate image;
 
 pub enum OSStatus {
-    no_error = 0,
+    NoError = 0,
 }
 
 mod point;
+use point::Point;
 
 mod game_type;
 use game_type::*;
@@ -25,16 +22,15 @@ use palette::*;
 mod my_byte_order;
 
 mod game_data;
-use game_data::{GameData, ReadGameDataExt};
+use game_data::ReadGameDataExt;
 
 mod save_game;
 use save_game::ReadSaveGameExt;
 
 mod tile_renderer;
-use tile_renderer::*;
 
 mod zone_renderer;
-use zone_renderer::*;
+use zone_renderer::ZoneRenderer;
 
 use image::png::PNGEncoder;
 
@@ -72,17 +68,17 @@ pub extern "C" fn generate_thumbnail(
 
     let game = {
         let mut buffer = fs::File::open(&game_path).expect("Unable to save game file!");
-        buffer.read_save_game(&mut game_data.zones)
+        buffer.read_save_game(&mut game_data.zones).expect("Unable to read game file!")
     };
 
-    let renderer = TileRenderer::new(game_data.tiles, palette);
-    let result = renderer.render(0x12);
+    let renderer = ZoneRenderer::new(game_data, palette);
+    let result = renderer.render(game.current_zone_id, Point(0,0));
 
     let mut buffer = Vec::new();
     {
         let encoder = PNGEncoder::new(&mut buffer);
         encoder
-            .encode(&result, 32, 32, image::ColorType::RGBA(8))
+            .encode(&result, 288, 288, image::ColorType::RGBA(8))
             .expect("Unable to write output file");
     }
     buffer.shrink_to_fit();
@@ -93,5 +89,5 @@ pub extern "C" fn generate_thumbnail(
         std::mem::forget(buffer);
     }
 
-    OSStatus::no_error
+    OSStatus::NoError
 }

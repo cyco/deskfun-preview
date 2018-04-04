@@ -31,6 +31,11 @@ pub trait ByteOrderExt: ReadBytesExt {
     fn read_u32_le(&mut self) -> io::Result<u32> {
         self.read_u32::<LittleEndian>()
     }
+
+    #[inline]
+    fn read_i16_le_into(&mut self, mut dst: &mut [i16]) -> io::Result<()> {
+        self.read_i16_into::<LittleEndian>(&mut dst)
+    }
 }
 
 impl<R: ReadBytesExt + ?Sized> ByteOrderExt for R {}

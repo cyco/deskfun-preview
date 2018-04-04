@@ -11,8 +11,8 @@ use game_data::tile;
 use super::point::Point;
 
 pub struct SaveGame {
-    current_zone_id: u16,
-    position_on_zone: Point
+    pub current_zone_id: u16,
+    pub position_on_zone: Point
 }
 
 pub trait ReadSaveGameExt: ByteOrderExt {

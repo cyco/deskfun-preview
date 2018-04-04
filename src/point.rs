@@ -1,2 +1,2 @@
 
-pub struct Point(usize, usize);
+pub struct Point(pub usize, pub usize);

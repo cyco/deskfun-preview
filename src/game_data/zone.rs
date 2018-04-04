@@ -1,5 +1,6 @@
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read, Result};
+use std::ops::Index;
 
 use super::action::*;
 use super::hotspot::*;
@@ -14,6 +15,18 @@ pub struct Zone {
     pub hotspots: Vec<Hotspot>,
     pub npcs: Vec<NPC>,
     pub actions: Vec<Action>,
+    pub tiles: Vec<i16>,
+}
+
+impl Zone {
+    pub fn tile_id_at(&self, index: (u8, u8, u8)) -> Option<i16> {
+        let (x, y, z) = index;
+        let tile_idx = 3 * (y as usize * self.width as usize + x as usize) + z as usize;
+        match self.tiles[tile_idx] {
+            -1 => None,
+            tile_id => Some(tile_id),
+        }
+    }
 }
 
 pub trait ReadZoneExt: io::Read {
@@ -49,9 +62,9 @@ pub trait ReadZoneExt: io::Read {
             planet == planet_again,
             "Expected to find the same planet again"
         );
-        let mut tile_ids = Vec::new();
-        self.take((3 * width * height * 2).into())
-            .read_to_end(&mut tile_ids)?;
+        let mut tile_ids = vec![0; 3 * width as usize * height as usize];
+        self.take(3 * width as u64 * height as u64 * 2)
+            .read_i16_le_into(&mut tile_ids)?;
 
         let hotspot_count = self.read_u16_le()?;
         let mut hotspots = Vec::new();
@@ -77,6 +90,7 @@ pub trait ReadZoneExt: io::Read {
             hotspots: hotspots,
             npcs: npcs,
             actions: actions,
+            tiles: tile_ids,
         })
     }
 

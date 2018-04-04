@@ -14,25 +14,27 @@ impl TileRenderer {
         }
     }
 
-    pub fn render(&self, id: u16) -> [u8; WIDTH * HEIGHT * 4] {
+    pub fn render(&self, id: u16, x: usize, y: usize, width: usize, buffer : &mut Vec<u8>) -> Option<()> {
         let pixels = self.tiles[id as usize].pixels;
-        let mut result = [0; WIDTH * HEIGHT * 4];
+        let buffer_start = (HEIGHT * y * width) + x * WIDTH;
 
-        for y in 0..HEIGHT {
-            for x in 0..WIDTH {
-                let idx = y * WIDTH + x;
-                match self.palette.at(pixels[idx]) {
+        for ty in 0..HEIGHT {
+            for tx in 0..WIDTH {
+                let tile_pixel = ty * WIDTH + tx;
+                let idx = buffer_start + ty * width + tx;
+
+                match self.palette.at(pixels[tile_pixel]) {
                     Color::Transparent => continue,
                     Color::RGB(r, g, b) => {
-                        result[4 * idx] = r;
-                        result[4 * idx + 1] = g;
-                        result[4 * idx + 2] = b;
-                        result[4 * idx + 3] = 0xFF;
+                        buffer[4 * idx] = r;
+                        buffer[4 * idx + 1] = g;
+                        buffer[4 * idx + 2] = b;
+                        buffer[4 * idx + 3] = 0xFF;
                     }
                 }
             }
         }
 
-        result
+        None
     }
 }
