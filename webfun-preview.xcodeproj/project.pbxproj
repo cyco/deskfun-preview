@@ -32,6 +32,7 @@
 		83981581207413E900F22695 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83981580207413E900F22695 /* Assets.xcassets */; };
 		83981584207413E900F22695 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83981582207413E900F22695 /* MainMenu.xib */; };
 		8398158D2074141C00F22695 /* webfun-preview.qlgenerator in Copy QuickLook Plugin */ = {isa = PBXBuildFile; fileRef = 83243FCA2071293000C6B4AE /* webfun-preview.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		83B063B12076AE910026DFC3 /* indy.data in Resources */ = {isa = PBXBuildFile; fileRef = 83B063B02076A9D70026DFC3 /* indy.data */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,23 +85,6 @@
 		83981585207413E900F22695 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		83B063B02076A9D70026DFC3 /* indy.data */ = {isa = PBXFileReference; lastKnownFileType = file; path = indy.data; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFrameworksBuildPhase section */
-		83243FC62071293000C6B4AE /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		83981579207413E700F22695 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		83243FC02071293000C6B4AE = {
@@ -176,26 +160,13 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		83243FC72071293000C6B4AE /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		83243FC92071293000C6B4AE /* webfun-preview */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 83243FD62071293000C6B4AE /* Build configuration list for PBXNativeTarget "webfun-preview" */;
 			buildPhases = (
-				831AD96620718A9600DBAC7C /* Fetch Game Data */,
 				832440082071541A00C6B4AE /* Build Library */,
 				83243FC52071293000C6B4AE /* Sources */,
-				83243FC62071293000C6B4AE /* Frameworks */,
-				83243FC72071293000C6B4AE /* Headers */,
 				83243FC82071293000C6B4AE /* Resources */,
 			);
 			buildRules = (
@@ -213,7 +184,6 @@
 			buildConfigurationList = 83981589207413E900F22695 /* Build configuration list for PBXNativeTarget "WebFun (preview)" */;
 			buildPhases = (
 				83981578207413E700F22695 /* Sources */,
-				83981579207413E700F22695 /* Frameworks */,
 				8398157A207413E700F22695 /* Resources */,
 				8398158A2074140500F22695 /* Copy QuickLook Plugin */,
 			);
@@ -281,6 +251,7 @@
 				831AD9632071888000DBAC7C /* yoda.pal in Resources */,
 				831AD9642071888000DBAC7C /* yoda.data in Resources */,
 				831AD9652071888000DBAC7C /* indy.pal in Resources */,
+				83B063B12076AE910026DFC3 /* indy.data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,20 +267,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		831AD96620718A9600DBAC7C /* Fetch Game Data */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Fetch Game Data";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\nif [[ -f \"$PROJECT_ROOT/assets/yoda.data\" ]]; then\n    echo File exists... Skipping\n    exit 0;\nfi\n\n\n\n\n\n\n\n\n\n\n";
-		};
 		832440082071541A00C6B4AE /* Build Library */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -323,6 +280,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "if [[ \"$CONFIGURATION\" == \"Debug\" ]]; then\n    $HOME/.cargo/bin/cargo build\nelse\n    $HOME/.cargo/bin/cargo build --release\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 		83B063AB207690100026DFC3 /* Fetch "Yoda Stories" */ = {
 			isa = PBXShellScriptBuildPhase;
