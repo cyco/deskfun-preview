@@ -6,6 +6,21 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		83B063A72076900C0026DFC3 /* Fetch Game Data */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 83B063A82076900C0026DFC3 /* Build configuration list for PBXAggregateTarget "Fetch Game Data" */;
+			buildPhases = (
+				83B063AB207690100026DFC3 /* Fetch "Yoda Stories" */,
+				83B063AD20769F1C0026DFC3 /* Fetch "Indy's Dektop Adventures" */,
+			);
+			dependencies = (
+			);
+			name = "Fetch Game Data";
+			productName = "game-data";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		831AD9632071888000DBAC7C /* yoda.pal in Resources */ = {isa = PBXBuildFile; fileRef = 83243FDC2071297F00C6B4AE /* yoda.pal */; };
 		831AD9642071888000DBAC7C /* yoda.data in Resources */ = {isa = PBXBuildFile; fileRef = 83243FE12071297F00C6B4AE /* yoda.data */; };
@@ -26,6 +41,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 83243FC92071293000C6B4AE;
 			remoteInfo = "webfun-preview";
+		};
+		83B063AE2076A0B30026DFC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83243FC12071293000C6B4AE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83B063A72076900C0026DFC3;
+			remoteInfo = "Fetch Game Data";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -60,6 +82,7 @@
 		83981580207413E900F22695 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		83981583207413E900F22695 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		83981585207413E900F22695 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		83B063B02076A9D70026DFC3 /* indy.data */ = {isa = PBXFileReference; lastKnownFileType = file; path = indy.data; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +136,7 @@
 		83243FDB2071297F00C6B4AE /* assets */ = {
 			isa = PBXGroup;
 			children = (
+				83B063B02076A9D70026DFC3 /* indy.data */,
 				83243FDC2071297F00C6B4AE /* yoda.pal */,
 				83243FDD2071297F00C6B4AE /* save-games */,
 				83243FE12071297F00C6B4AE /* yoda.data */,
@@ -167,8 +191,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 83243FD62071293000C6B4AE /* Build configuration list for PBXNativeTarget "webfun-preview" */;
 			buildPhases = (
-				832440082071541A00C6B4AE /* Build Library */,
 				831AD96620718A9600DBAC7C /* Fetch Game Data */,
+				832440082071541A00C6B4AE /* Build Library */,
 				83243FC52071293000C6B4AE /* Sources */,
 				83243FC62071293000C6B4AE /* Frameworks */,
 				83243FC72071293000C6B4AE /* Headers */,
@@ -177,6 +201,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				83B063AF2076A0B30026DFC3 /* PBXTargetDependency */,
 			);
 			name = "webfun-preview";
 			productName = "webfun-preview";
@@ -223,6 +248,9 @@
 							};
 						};
 					};
+					83B063A72076900C0026DFC3 = {
+						CreatedOnToolsVersion = 9.3;
+					};
 				};
 			};
 			buildConfigurationList = 83243FC42071293000C6B4AE /* Build configuration list for PBXProject "webfun-preview" */;
@@ -240,6 +268,7 @@
 			targets = (
 				83243FC92071293000C6B4AE /* webfun-preview */,
 				8398157B207413E700F22695 /* WebFun (preview) */,
+				83B063A72076900C0026DFC3 /* Fetch Game Data */,
 			);
 		};
 /* End PBXProject section */
@@ -279,7 +308,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "";
+			shellScript = "\nif [[ -f \"$PROJECT_ROOT/assets/yoda.data\" ]]; then\n    echo File exists... Skipping\n    exit 0;\nfi\n\n\n\n\n\n\n\n\n\n\n";
 		};
 		832440082071541A00C6B4AE /* Build Library */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -294,6 +323,35 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "if [[ \"$CONFIGURATION\" == \"Debug\" ]]; then\n    $HOME/.cargo/bin/cargo build\nelse\n    $HOME/.cargo/bin/cargo build --release\nfi\n";
+		};
+		83B063AB207690100026DFC3 /* Fetch "Yoda Stories" */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Fetch \"Yoda Stories\"";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ARCHIVE_URL=\"https://archive.org/download/Star_Wars_-_Yoda_Stories_1997_LucasArts_NL/Star%20Wars%20-%20Yoda%20Stories%20%281997%29%28LucasArts%29%28NL%29.iso\"\nYODA_PALETTE=\"$PROJECT_DIR/assets/yoda.pal\"\nYODA_DATA=\"$PROJECT_DIR/assets/yoda.data\"\n\nif [[ ! -f \"$YODA_PALETTE\" ]]; then\n    curl -vv -L -r 502300912-502301935 \"$ARCHIVE_URL\" > \"$YODA_PALETTE\"\nfi\n\nif [[ ! -f \"$YODA_DATA\" ]]; then\n    curl -vv -L -r 502538240-507140233 \"$ARCHIVE_URL\" > \"$YODA_DATA\"\nfi\n";
+		};
+		83B063AD20769F1C0026DFC3 /* Fetch "Indy's Dektop Adventures" */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Fetch \"Indy's Dektop Adventures\"";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ARCHIVE_URL=\"https://sites.google.com/site/indysdesktop/IndianaJonesAndHisDesktopAdventures.zip?attredirects=0\"\nINDY_PALETTE=\"$PROJECT_DIR/assets/indy.pal\"\nINDY_DATA=\"$PROJECT_DIR/assets/indy.data\"\n\nwhich 7z 2> /dev/null\nif [[ $? -ne 0 ]]; then\n    echo \"warning: Unable to find 7z. Please install it using 'brew install p7zip'.\"\n    exit 0\nfi\n\nif [[ ! -f \"$INDY_PALETTE\" || ! -f \"$INDY_DATA\" ]]; then\n    TEMP_DIR=$(mktemp -d)\n    cd $TEMP_DIR\n\n    curl -vv -L \"$ARCHIVE_URL\" > indy.zip\n    unzip -d . indy.zip DESKTOP.DA_ DESKADV.EX_\n    rm indy.zip\n\n    7z e DESKTOP.DA_\n    7z e DESKADV.EX_\n\n    mv DESKTOP.DAw \"$INDY_DATA\"\n    dd if=DESKADV.EXe | dd bs=222806 skip=1 | dd bs=1024 count=1 of=\"$INDY_PALETTE\"\n\n    rm -r \"$TEMP_DIR\"\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -323,6 +381,11 @@
 			isa = PBXTargetDependency;
 			target = 83243FC92071293000C6B4AE /* webfun-preview */;
 			targetProxy = 8398158B2074141800F22695 /* PBXContainerItemProxy */;
+		};
+		83B063AF2076A0B30026DFC3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83B063A72076900C0026DFC3 /* Fetch Game Data */;
+			targetProxy = 83B063AE2076A0B30026DFC3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -525,6 +588,22 @@
 			};
 			name = Release;
 		};
+		83B063A92076900C0026DFC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		83B063AA2076900C0026DFC3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -551,6 +630,15 @@
 			buildConfigurations = (
 				83981587207413E900F22695 /* Debug */,
 				83981588207413E900F22695 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83B063A82076900C0026DFC3 /* Build configuration list for PBXAggregateTarget "Fetch Game Data" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83B063A92076900C0026DFC3 /* Debug */,
+				83B063AA2076900C0026DFC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
