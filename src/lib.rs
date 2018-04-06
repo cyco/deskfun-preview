@@ -4,8 +4,8 @@ use std::os::raw::c_char;
 use std::path;
 
 extern crate byteorder;
-extern crate image;
 extern crate encoding;
+extern crate image;
 
 pub enum OSStatus {
     NoError = 0,

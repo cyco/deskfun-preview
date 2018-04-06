@@ -1,4 +1,5 @@
-use std::io::{self, Read};
+use std::io;
+use std::io::Read;
 
 pub trait ReadMarkerExt: io::Read {
     fn read_category_marker(&mut self, name: &str) -> io::Result<()> {

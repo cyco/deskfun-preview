@@ -1,6 +1,6 @@
 use super::zone::Zone;
 use my_byte_order::ByteOrderExt;
-use std::io::{self, Result, Read};
+use std::io;
 
 pub enum HotspotType {
     TriggerLocation,
@@ -53,7 +53,7 @@ impl From<u32> for HotspotType {
 }
 
 pub trait ReadHotspotExt: io::Read {
-    fn read_hotspot(&mut self) -> Result<Hotspot> {
+    fn read_hotspot(&mut self) -> io::Result<Hotspot> {
         let hotspot_type = HotspotType::from(self.read_u32_le()?);
 
         let x = self.read_i16_le()?;
@@ -70,10 +70,10 @@ pub trait ReadHotspotExt: io::Read {
         })
     }
 
-    fn read_hotspots(&mut self, zones: &mut Vec<Zone>) -> Result<()> {
-        let size = self.read_u32_le()?;
-        let mut buf = Vec::new();
-        self.take(size as u64).read_to_end(&mut buf)?;
+    fn read_hotspots(&mut self, zones: &mut Vec<Zone>) -> io::Result<()> {
+        let size = self.read_u32_le()? as usize;
+        let mut buf = vec!(0;size);
+        self.read_exact(&mut buf)?;
 
         Ok(())
     }

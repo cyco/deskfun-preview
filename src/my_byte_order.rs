@@ -1,10 +1,8 @@
-use byteorder::{LittleEndian, ReadBytesExt, ByteOrder};
+use byteorder::{LittleEndian, ReadBytesExt};
 use encoding::all::ISO_8859_1;
 use encoding::{DecoderTrap, Encoding};
 use std::io;
-use std::io::{Read, ErrorKind};
-use std::iter::*;
-use std::result;
+use std::io::{ErrorKind, Read};
 
 pub trait ByteOrderExt: ReadBytesExt {
     #[inline]
@@ -102,7 +100,7 @@ pub trait ByteOrderExt: ReadBytesExt {
 
         match ISO_8859_1.decode(&buffer[0..used_length], DecoderTrap::Strict) {
             Err(err) => Err(io::Error::new(ErrorKind::Other, err)),
-            Ok(thing) => Ok(thing)
+            Ok(thing) => Ok(thing),
         }
     }
 }

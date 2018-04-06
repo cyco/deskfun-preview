@@ -1,4 +1,5 @@
-use std::io::{self, Read};
+use std::io;
+use std::io::Read;
 
 pub mod action;
 pub mod character;

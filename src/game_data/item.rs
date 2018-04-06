@@ -1,9 +1,9 @@
 use super::super::{GameType};
 use my_byte_order::ByteOrderExt;
-use std::io::{self, Read, Result};
+use std::io;
 
 pub trait ReadItemsExt: io::Read {
-    fn read_tile_name(&mut self, game_type: GameType) -> Result<(i32, String)> {
+    fn read_tile_name(&mut self, game_type: GameType) -> io::Result<(i32, String)> {
         let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), "".to_string()));
@@ -19,7 +19,7 @@ pub trait ReadItemsExt: io::Read {
         Ok((index.into(), name))
     }
 
-    fn read_tile_names(&mut self, game_type: GameType) -> Result<()> {
+    fn read_tile_names(&mut self, game_type: GameType) -> io::Result<()> {
         self.read_u32_le();
 
         loop {

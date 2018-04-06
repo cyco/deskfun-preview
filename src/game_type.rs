@@ -2,8 +2,8 @@ use std::fmt;
 use std::fs::File;
 use std::io;
 use std::io::Read;
-use std::path::Path;
 use std::path;
+use std::path::Path;
 
 #[derive(PartialEq, Copy, Clone)]
 pub enum GameType {
@@ -21,7 +21,7 @@ impl fmt::Display for GameType {
 }
 
 pub fn identify_save_game_type(path: &Path) -> io::Result<GameType> {
-    let mut file_magic = String::new();
+    let mut file_magic = String::with_capacity(9);
     File::open(&path)?.take(9).read_to_string(&mut file_magic)?;
 
     match file_magic.as_str() {
@@ -37,13 +37,13 @@ pub fn identify_save_game_type(path: &Path) -> io::Result<GameType> {
 pub fn build_game_data_path(base_path: &path::Path, game_type: &GameType) -> path::PathBuf {
     match game_type {
         GameType::Yoda => base_path.join(path::Path::new("Contents/Resources/yoda.data")),
-        GameType::Indy => base_path.join(path::Path::new("Contents/Resources/indy.data"))
+        GameType::Indy => base_path.join(path::Path::new("Contents/Resources/indy.data")),
     }
 }
 
 pub fn build_palette_path(base_path: &path::Path, game_type: &GameType) -> path::PathBuf {
     match game_type {
         GameType::Yoda => base_path.join(path::Path::new("Contents/Resources/yoda.pal")),
-        GameType::Indy => base_path.join(path::Path::new("Contents/Resources/indy.pal"))
+        GameType::Indy => base_path.join(path::Path::new("Contents/Resources/indy.pal")),
     }
 }

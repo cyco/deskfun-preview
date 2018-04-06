@@ -1,7 +1,5 @@
 use my_byte_order::ByteOrderExt;
 use std::io;
-use std::iter;
-use std::mem;
 
 pub const WIDTH: usize = 32;
 pub const HEIGHT: usize = 32;

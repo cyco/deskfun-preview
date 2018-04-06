@@ -1,11 +1,10 @@
 use super::super::game_type::GameType;
 use super::marker::ReadMarkerExt;
-use byteorder::{ByteOrder, ReadBytesExt};
 use my_byte_order::ByteOrderExt;
-use std::io::{self, Read, Result};
+use std::io;
 
 pub trait ReadCharactersExt: io::Read {
-    fn read_char_frame(&mut self) -> Result<()> {
+    fn read_char_frame(&mut self) -> io::Result<()> {
         for _ in 0..0x8 {
             self.read_i16_le();
         }
@@ -13,7 +12,7 @@ pub trait ReadCharactersExt: io::Read {
         Ok(())
     }
 
-    fn read_character(&mut self, game_type: GameType) -> Result<(i32, ())> {
+    fn read_character(&mut self, game_type: GameType) -> io::Result<(i32, ())> {
         let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), ()));
@@ -35,7 +34,7 @@ pub trait ReadCharactersExt: io::Read {
         Ok((index.into(), ()))
     }
 
-    fn read_character_weapon(&mut self) -> Result<(i32, ())> {
+    fn read_character_weapon(&mut self) -> io::Result<(i32, ())> {
         let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), ()));
@@ -47,7 +46,7 @@ pub trait ReadCharactersExt: io::Read {
         Ok((index.into(), ()))
     }
 
-    fn read_character_weapons(&mut self) -> Result<()> {
+    fn read_character_weapons(&mut self) -> io::Result<()> {
         self.read_u32_le();
 
         loop {
@@ -60,7 +59,7 @@ pub trait ReadCharactersExt: io::Read {
         Ok(())
     }
 
-    fn read_character_auxiliaries(&mut self) -> Result<()> {
+    fn read_character_auxiliaries(&mut self) -> io::Result<()> {
         self.read_u32_le();
 
         loop {
@@ -73,7 +72,7 @@ pub trait ReadCharactersExt: io::Read {
         Ok(())
     }
 
-    fn read_character_auxiliary(&mut self) -> Result<(i32, ())> {
+    fn read_character_auxiliary(&mut self) -> io::Result<(i32, ())> {
         let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), ()));
@@ -84,7 +83,7 @@ pub trait ReadCharactersExt: io::Read {
         Ok((index.into(), ()))
     }
 
-    fn read_characters(&mut self, game_type: GameType) -> Result<()> {
+    fn read_characters(&mut self, game_type: GameType) -> io::Result<()> {
         self.read_u32_le();
 
         loop {

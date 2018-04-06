@@ -1,7 +1,7 @@
 use super::super::{GameType};
 use super::marker::ReadMarkerExt;
 use my_byte_order::ByteOrderExt;
-use std::io::{self, Read};
+use std::io;
 
 use super::action::*;
 use super::hotspot::*;
@@ -167,38 +167,41 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_zaux(&mut self) -> io::Result<()> {
-        let size = self.read_u32_le()?;
-        let mut buf = Vec::new();
-        self.take(size as u64).read_to_end(&mut buf)?;
+        let size = self.read_u32_le()? as usize;
+        let mut buf = vec!(0; size);
+        self.read_exact(&mut buf)?;
+
         Ok(())
     }
 
     fn read_zax2(&mut self) -> io::Result<()> {
-        let size = self.read_u32_le()?;
-        let mut buf = Vec::new();
-        self.take(size as u64).read_to_end(&mut buf)?;
+        let size = self.read_u32_le()? as usize;
+        let mut buf = vec!(0; size);
+        self.read_exact(&mut buf)?;
+
         Ok(())
     }
 
     fn read_zax3(&mut self) -> io::Result<()> {
-        let size = self.read_u32_le()?;
-        let mut buf = Vec::new();
-        self.take(size as u64).read_to_end(&mut buf)?;
+        let size = self.read_u32_le()? as usize;
+        let mut buf = vec!(0; size);
+        self.read_exact(&mut buf)?;
+
         Ok(())
     }
 
     fn read_zax4(&mut self) -> io::Result<()> {
-        let size = self.read_u32_le()?;
-        let mut buf = Vec::new();
-        self.take(size as u64).read_to_end(&mut buf)?;
+        let size = self.read_u32_le()? as usize;
+        let mut buf = vec!(0; size);
+        self.read_exact(&mut buf)?;
+
         Ok(())
     }
 
     fn read_zone_names(&mut self, zones: &mut Vec<Zone>) -> io::Result<()> {
-        let size = self.read_u32_le()?;
-
-        let mut buf = Vec::new();
-        self.take(size as u64).read_to_end(&mut buf)?;
+        let size = self.read_u32_le()? as usize;
+        let mut buf = vec!(0; size);
+        self.read_exact(&mut buf)?;
 
         Ok(())
     }

@@ -1,12 +1,14 @@
-use super::zone::Zone;
-use my_byte_order::ByteOrderExt;
-use std::io::{self, Read, Result};
 use super::marker::ReadMarkerExt;
+use super::zone::Zone;
+use encoding::all::ISO_8859_1;
+use encoding::{DecoderTrap, Encoding};
+use my_byte_order::ByteOrderExt;
+use std::io;
 
 pub struct Action {}
 
 pub trait ReadActionExt: io::Read {
-    fn read_action(&mut self) -> Result<Action> {
+    fn read_action(&mut self) -> io::Result<Action> {
         self.read_category_marker("IACT")?;
 
         let size = self.read_u32_le()?;
@@ -23,21 +25,22 @@ pub trait ReadActionExt: io::Read {
         Ok(Action {})
     }
 
-    fn read_action_item(&mut self) -> Result<()> {
+    fn read_action_item(&mut self) -> io::Result<()> {
         let opcode = self.read_u16_le()?;
         let mut arguments = [0 as i16; 5];
         self.read_i16_le_into(&mut arguments)?;
 
-        let text_length = self.read_u16_le()?;
+        let text_length = self.read_u16_le()? as usize;
         if text_length != 0 {
-            let mut text = String::with_capacity(text_length as usize);
-            self.take(text_length.into()).read_to_string(&mut text)?;
+            let mut buffer = vec![0; text_length];
+            self.read_exact(&mut buffer)?;
+            let text = ISO_8859_1.decode(&buffer, DecoderTrap::Strict);
         }
 
         Ok(())
     }
 
-    fn read_actions(&mut self, zones: &mut Vec<Zone>) -> Result<()> {
+    fn read_actions(&mut self, zones: &mut Vec<Zone>) -> io::Result<()> {
         self.read_u32_le()?;
         loop {
             let idx = self.read_i16_le()?;
@@ -56,7 +59,7 @@ pub trait ReadActionExt: io::Read {
 
     fn read_action_names(&mut self) -> io::Result<()> {
         let size = self.read_u32_le()? as usize;
-        let mut buf = vec!(0; size);
+        let mut buf = vec![0; size];
         self.read_exact(&mut buf)?;
 
         Ok(())

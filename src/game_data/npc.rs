@@ -1,10 +1,10 @@
 use my_byte_order::ByteOrderExt;
-use std::io::{self, Result};
+use std::io;
 
 pub struct NPC {}
 
 pub trait ReadNPCExt: io::Read {
-    fn read_npc(&mut self) -> Result<NPC> {
+    fn read_npc(&mut self) -> io::Result<NPC> {
         let character = self.read_u16_le()?;
         let x = self.read_u16_le()?;
         let y = self.read_u16_le()?;

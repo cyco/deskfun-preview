@@ -3,7 +3,7 @@ use super::marker::ReadMarkerExt;
 use encoding::all::ISO_8859_1;
 use encoding::{DecoderTrap, Encoding};
 use my_byte_order::ByteOrderExt;
-use std::io::{self, Read};
+use std::io;
 
 pub trait ReadPuzzlesExt: io::Read {
     fn read_puzzle(&mut self, game_type: GameType) -> io::Result<(i32, ())> {
@@ -50,10 +50,9 @@ pub trait ReadPuzzlesExt: io::Read {
     }
 
     fn read_puzzle_names(&mut self) -> io::Result<()> {
-        let size = self.read_u32_le()?;
-
-        let mut buf = Vec::new();
-        self.take(size as u64).read_to_end(&mut buf)?;
+        let size = self.read_u32_le()? as usize;
+        let mut buf = vec!(0; size);
+        self.read_exact(&mut buf)?;
 
         Ok(())
     }
