@@ -1,12 +1,12 @@
-use super::super::{GameType, CURRENT_GAME_TYPE};
+use super::super::{GameType};
+use super::marker::ReadMarkerExt;
 use encoding::all::ISO_8859_1;
 use encoding::{DecoderTrap, Encoding};
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read};
-use super::marker::ReadMarkerExt;
 
 pub trait ReadPuzzlesExt: io::Read {
-    fn read_puzzle(&mut self) -> io::Result<(i32, ())> {
+    fn read_puzzle(&mut self, game_type: GameType) -> io::Result<(i32, ())> {
         let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), ()));
@@ -14,10 +14,8 @@ pub trait ReadPuzzlesExt: io::Read {
 
         self.read_category_marker("IPUZ")?;
         let size = self.read_u32_le();
-        unsafe {
-            if CURRENT_GAME_TYPE == GameType::Yoda {
-                let puzzle_type = self.read_u32_le();
-            }
+        if game_type == GameType::Yoda {
+            let puzzle_type = self.read_u32_le();
         }
         let unknown1 = self.read_u32_le();
         let unknown2 = self.read_u32_le();
@@ -31,20 +29,18 @@ pub trait ReadPuzzlesExt: io::Read {
         }
 
         let item_1 = self.read_u16_le();
-        unsafe {
-            if CURRENT_GAME_TYPE == GameType::Yoda {
-                let item_2 = self.read_u16_le();
-            }
+        if game_type == GameType::Yoda {
+            let item_2 = self.read_u16_le();
         }
 
         Ok((index.into(), ()))
     }
 
-    fn read_puzzles(&mut self) -> io::Result<()> {
+    fn read_puzzles(&mut self, game_type: GameType) -> io::Result<()> {
         self.read_u32_le();
 
         loop {
-            match self.read_puzzle()? {
+            match self.read_puzzle(game_type)? {
                 (-1, _) => break,
                 _ => (),
             }

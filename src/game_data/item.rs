@@ -1,31 +1,29 @@
-use super::super::{GameType, CURRENT_GAME_TYPE};
+use super::super::{GameType};
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read, Result};
 
 pub trait ReadItemsExt: io::Read {
-    fn read_tile_name(&mut self) -> Result<(i32, String)> {
+    fn read_tile_name(&mut self, game_type: GameType) -> Result<(i32, String)> {
         let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), "".to_string()));
         }
 
-        let length = unsafe {
-            if CURRENT_GAME_TYPE == GameType::Yoda {
-                0x18
-            } else {
-                16
-            }
+        let length = if game_type == GameType::Yoda {
+            0x18
+        } else {
+            16
         };
 
         let name = self.read_iso_cstring_with_length(length)?;
         Ok((index.into(), name))
     }
 
-    fn read_tile_names(&mut self) -> Result<()> {
+    fn read_tile_names(&mut self, game_type: GameType) -> Result<()> {
         self.read_u32_le();
 
         loop {
-            match self.read_tile_name()? {
+            match self.read_tile_name(game_type)? {
                 (-1, _) => break,
                 _ => (),
             }

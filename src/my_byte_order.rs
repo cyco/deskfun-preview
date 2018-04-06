@@ -1,4 +1,4 @@
-use byteorder::{LittleEndian, ReadBytesExt};
+use byteorder::{LittleEndian, ReadBytesExt, ByteOrder};
 use encoding::all::ISO_8859_1;
 use encoding::{DecoderTrap, Encoding};
 use std::io;

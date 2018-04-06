@@ -5,6 +5,7 @@ pub mod character;
 pub mod end;
 pub mod hotspot;
 pub mod item;
+mod marker;
 pub mod npc;
 pub mod puzzle;
 pub mod setup_image;
@@ -12,7 +13,6 @@ pub mod sounds;
 pub mod tile;
 pub mod version;
 pub mod zone;
-mod marker;
 
 use self::action::ReadActionExt;
 use self::character::ReadCharactersExt;
@@ -36,7 +36,7 @@ pub struct GameData {
 }
 
 pub trait ReadGameDataExt: io::Read {
-    fn read_game_data(&mut self) -> io::Result<GameData> {
+    fn read_game_data(&mut self, game_type: GameType) -> io::Result<GameData> {
         let mut zones = Vec::new();
         let mut tiles = Vec::new();
 
@@ -56,14 +56,14 @@ pub trait ReadGameDataExt: io::Read {
                         Ok(())
                     }
                     "ZONE" => {
-                        zones = self.read_zones()?;
+                        zones = self.read_zones(game_type)?;
                         Ok(())
                     }
-                    "PUZ2" => self.read_puzzles(),
-                    "CHAR" => self.read_characters(),
+                    "PUZ2" => self.read_puzzles(game_type),
+                    "CHAR" => self.read_characters(game_type),
                     "CHWP" => self.read_character_weapons(),
                     "CAUX" => self.read_character_auxiliaries(),
-                    "TNAM" => self.read_tile_names(),
+                    "TNAM" => self.read_tile_names(game_type),
                     "ZAUX" => self.read_zaux(),
                     "ZAX2" => self.read_zax2(),
                     "ZAX3" => self.read_zax3(),

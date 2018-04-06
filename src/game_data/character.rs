@@ -1,8 +1,8 @@
-use super::super::game_type::{GameType, CURRENT_GAME_TYPE};
-use byteorder::ReadBytesExt;
+use super::super::game_type::GameType;
+use super::marker::ReadMarkerExt;
+use byteorder::{ByteOrder, ReadBytesExt};
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read, Result};
-use super::marker::ReadMarkerExt;
 
 pub trait ReadCharactersExt: io::Read {
     fn read_char_frame(&mut self) -> Result<()> {
@@ -13,30 +13,20 @@ pub trait ReadCharactersExt: io::Read {
         Ok(())
     }
 
-    fn read_character(&mut self) -> Result<(i32, ())> {
+    fn read_character(&mut self, game_type: GameType) -> Result<(i32, ())> {
         let index = self.read_i16_le()?;
         if index == -1 {
             return Ok((index.into(), ()));
         }
 
-            self.read_category_marker("ICHA")?;
+        self.read_category_marker("ICHA")?;
         let size = self.read_u32_le();
-        let mut name = String::new();
-        unsafe {
-            if CURRENT_GAME_TYPE == GameType::Yoda {
-                self.take(16).read_to_string(&mut name);
-            } else {
-                name = self.read_cstring_with_length(16)?;
-            }
-        }
-
+        let name = self.read_cstring_with_length(16)?;
         let char_type = self.read_i16_le();
         let movement_type = self.read_i16_le();
-        unsafe {
-            if CURRENT_GAME_TYPE == GameType::Yoda {
-                let probably_garbage_1 = self.read_i16_le();
-                let probably_garbage_2 = self.read_u32_le();
-            }
+        if game_type == GameType::Yoda {
+            let probably_garbage_1 = self.read_i16_le();
+            let probably_garbage_2 = self.read_u32_le();
         }
         let frame1 = self.read_char_frame();
         let frame2 = self.read_char_frame();
@@ -94,11 +84,11 @@ pub trait ReadCharactersExt: io::Read {
         Ok((index.into(), ()))
     }
 
-    fn read_characters(&mut self) -> Result<()> {
+    fn read_characters(&mut self, game_type: GameType) -> Result<()> {
         self.read_u32_le();
 
         loop {
-            match self.read_character()? {
+            match self.read_character(game_type)? {
                 (-1, _) => break,
                 _ => (),
             }

@@ -1,4 +1,4 @@
-use super::super::{GameType, CURRENT_GAME_TYPE};
+use super::super::{GameType};
 use super::marker::ReadMarkerExt;
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read};
@@ -31,32 +31,28 @@ impl Zone {
 }
 
 pub trait ReadZoneExt: io::Read {
-    fn read_zones(&mut self) -> io::Result<Vec<Zone>> {
+    fn read_zones(&mut self, game_type: GameType) -> io::Result<Vec<Zone>> {
         let mut count = self.read_u16_le()?;
         let mut zones = Vec::with_capacity(count as usize);
 
-        unsafe {
-            if CURRENT_GAME_TYPE == GameType::Indy {
-                let unknown = self.read_u16_le()?;
-                count = self.read_u16_le()?;
-            }
+        if game_type == GameType::Indy {
+            let unknown = self.read_u16_le()?;
+            count = self.read_u16_le()?;
         }
 
         for i in 0..count {
-            zones.push(self.read_zone(i)?);
+            zones.push(self.read_zone(i, game_type)?);
         }
 
         Ok(zones)
     }
 
-    fn read_zone(&mut self, mut index: u16) -> io::Result<Zone> {
+    fn read_zone(&mut self, mut index: u16, game_type: GameType) -> io::Result<Zone> {
         let mut planet: u16 = 0;
-        unsafe {
-            if CURRENT_GAME_TYPE == GameType::Yoda {
-                planet = self.read_u16_le()?;
-                let size = self.read_u32_le()?;
-                index = self.read_u16_le()?;
-            }
+        if game_type == GameType::Yoda {
+            planet = self.read_u16_le()?;
+            let size = self.read_u32_le()?;
+            index = self.read_u16_le()?;
         }
 
         self.read_category_marker("IZON")?;
@@ -64,32 +60,28 @@ pub trait ReadZoneExt: io::Read {
         let width = self.read_u16_le()?;
         let height = self.read_u16_le()?;
         let ztype = self.read_u32_le()?;
-        unsafe {
-            if CURRENT_GAME_TYPE == GameType::Yoda {
-                let padding = self.read_u16_le()?;
-                let planet_again = self.read_u16_le()?;
-                assert!(
-                    planet == planet_again,
-                    "Expected to find the same planet again"
-                );
-            }
+        if game_type == GameType::Yoda {
+            let padding = self.read_u16_le()?;
+            let planet_again = self.read_u16_le()?;
+            assert!(
+                planet == planet_again,
+                "Expected to find the same planet again"
+            );
         }
 
         let mut tile_ids = vec![0; 3 * width as usize * height as usize];
         self.read_i16_le_into(&mut tile_ids)?;
 
-        unsafe {
-            if CURRENT_GAME_TYPE == GameType::Indy {
-                return Ok(Zone {
-                    id: index as usize,
-                    width: width,
-                    height: height,
-                    hotspots: Vec::new(),
-                    npcs: Vec::new(),
-                    actions: Vec::new(),
-                    tiles: tile_ids,
-                });
-            }
+        if game_type == GameType::Indy {
+            return Ok(Zone {
+                id: index as usize,
+                width: width,
+                height: height,
+                hotspots: Vec::new(),
+                npcs: Vec::new(),
+                actions: Vec::new(),
+                tiles: tile_ids,
+            });
         }
 
         let hotspot_count = self.read_u16_le()?;
@@ -187,12 +179,14 @@ pub trait ReadZoneExt: io::Read {
         self.take(size as u64).read_to_end(&mut buf)?;
         Ok(())
     }
+
     fn read_zax3(&mut self) -> io::Result<()> {
         let size = self.read_u32_le()?;
         let mut buf = Vec::new();
         self.take(size as u64).read_to_end(&mut buf)?;
         Ok(())
     }
+
     fn read_zax4(&mut self) -> io::Result<()> {
         let size = self.read_u32_le()?;
         let mut buf = Vec::new();

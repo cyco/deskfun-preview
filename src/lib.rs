@@ -52,7 +52,7 @@ pub extern "C" fn generate_thumbnail(
         let path = build_game_data_path(&data_path, &game_type);
         let mut buffer = fs::File::open(&path).expect("Unable to open game data file!");
         buffer
-            .read_game_data()
+            .read_game_data(game_type)
             .expect("Unable to read game data file!")
     });
     println!("reading game file: {}", elapsed);

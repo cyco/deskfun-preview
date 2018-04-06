@@ -5,13 +5,11 @@ use std::io::Read;
 use std::path::Path;
 use std::path;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Copy, Clone)]
 pub enum GameType {
     Yoda,
     Indy,
 }
-
-pub static mut CURRENT_GAME_TYPE: GameType = GameType::Yoda;
 
 impl fmt::Display for GameType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

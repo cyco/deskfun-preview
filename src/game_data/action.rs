@@ -55,10 +55,9 @@ pub trait ReadActionExt: io::Read {
     }
 
     fn read_action_names(&mut self) -> io::Result<()> {
-        let size = self.read_u32_le()?;
-
-        let mut buf = Vec::new();
-        self.take(size as u64).read_to_end(&mut buf)?;
+        let size = self.read_u32_le()? as usize;
+        let mut buf = vec!(0; size);
+        self.read_exact(&mut buf)?;
 
         Ok(())
     }
