@@ -5,6 +5,7 @@ use std::path;
 
 extern crate byteorder;
 extern crate image;
+extern crate encoding;
 
 pub enum OSStatus {
     NoError = 0,

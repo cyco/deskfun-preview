@@ -1,6 +1,8 @@
 use super::super::{GameType, CURRENT_GAME_TYPE};
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read};
+use encoding::{Encoding, DecoderTrap};
+use encoding::all::ISO_8859_1;
 
 pub trait ReadPuzzlesExt: io::Read {
     fn read_puzzle(&mut self) -> io::Result<(i32, ())> {
@@ -24,13 +26,11 @@ pub trait ReadPuzzlesExt: io::Read {
 
         for n in 0..5 {
             let length = self.read_u16_le()?;
-            let mut text = String::new();
-            // self.take(length.into()).read_to_string(&mut text)?;
-            match self.take(length.into()).read_to_string(&mut text) {
-                Ok(length) => text,
-                Err(err) => {println!("error: {}", err); String::new()},
-            };
+            let mut buffer = vec!(0; length as usize);
+            self.read_exact(&mut buffer)?;
+            let text = ISO_8859_1.decode(&buffer, DecoderTrap::Strict);
         }
+
         let item_1 = self.read_u16_le();
         unsafe {
             if CURRENT_GAME_TYPE == GameType::Yoda {
