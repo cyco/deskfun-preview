@@ -1,3 +1,4 @@
+use super::zone::Zone;
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read, Result};
 
@@ -36,6 +37,32 @@ pub trait ReadActionExt: io::Read {
             let mut text = String::with_capacity(text_length as usize);
             self.take(text_length.into()).read_to_string(&mut text)?;
         }
+
+        Ok(())
+    }
+
+    fn read_actions(&mut self, zones: &mut Vec<Zone>) -> Result<()> {
+        self.read_u32_le()?;
+        loop {
+            let idx = self.read_i16_le()?;
+            if idx == -1 {
+                break;
+            }
+
+            let count = self.read_u16_le()?;
+            for _ in 0..count {
+                self.read_action()?;
+            }
+        }
+
+        Ok(())
+    }
+
+    fn read_action_names(&mut self) -> io::Result<()> {
+        let size = self.read_u32_le()?;
+
+        let mut buf = Vec::new();
+        self.take(size as u64).read_to_end(&mut buf)?;
 
         Ok(())
     }

@@ -13,8 +13,10 @@ pub mod tile;
 pub mod version;
 pub mod zone;
 
+use self::action::ReadActionExt;
 use self::character::ReadCharactersExt;
 use self::end::ReadEndExt;
+use self::hotspot::ReadHotspotExt;
 use self::item::ReadItemsExt;
 use self::puzzle::ReadPuzzlesExt;
 use self::setup_image::ReadSetupImageExt;
@@ -61,6 +63,15 @@ pub trait ReadGameDataExt: io::Read {
                     "CHWP" => self.read_character_weapons(),
                     "CAUX" => self.read_character_auxiliaries(),
                     "TNAM" => self.read_tile_names(),
+                    "ZAUX" => self.read_zaux(),
+                    "ZAX2" => self.read_zax2(),
+                    "ZAX3" => self.read_zax3(),
+                    "ZAX4" => self.read_zax4(),
+                    "HTSP" => self.read_hotspots(&mut zones),
+                    "ACTN" => self.read_actions(&mut zones),
+                    "ZNAM" => self.read_zone_names(&mut zones),
+                    "PNAM" => self.read_puzzle_names(),
+                    "ANAM" => self.read_action_names(),
                     "ENDF" => {
                         self.read_end()?;
                         return Ok(1);
@@ -70,8 +81,6 @@ pub trait ReadGameDataExt: io::Read {
 
                 Ok(0)
             });
-            
-            println!("read {} in {}", category_name, elapsed);
 
             match result {
                 Ok(1) => break,

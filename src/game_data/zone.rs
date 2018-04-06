@@ -1,6 +1,6 @@
+use super::super::{GameType, CURRENT_GAME_TYPE};
 use my_byte_order::ByteOrderExt;
-use std::io::{self, Read, Result};
-use std::ops::Index;
+use std::io::{self, Read};
 
 use super::action::*;
 use super::hotspot::*;
@@ -30,21 +30,34 @@ impl Zone {
 }
 
 pub trait ReadZoneExt: io::Read {
-    fn read_zones(&mut self) -> Result<Vec<Zone>> {
-        let count = self.read_u16_le()?;
+    fn read_zones(&mut self) -> io::Result<Vec<Zone>> {
+        let mut count = self.read_u16_le()?;
         let mut zones = Vec::with_capacity(count as usize);
 
-        for _ in 0..count {
-            zones.push(self.read_zone()?);
+        unsafe {
+            if CURRENT_GAME_TYPE == GameType::Indy {
+                let unknown = self.read_u16_le()?;
+                count = self.read_u16_le()?;
+            }
+        }
+
+        for i in 0..count {
+            zones.push(self.read_zone(i)?);
         }
 
         Ok(zones)
     }
 
-    fn read_zone(&mut self) -> Result<Zone> {
-        let planet = self.read_u16_le()?;
-        let size = self.read_u32_le()?;
-        let index = self.read_u16_le()?;
+    fn read_zone(&mut self, mut index: u16) -> io::Result<Zone> {
+        let mut planet: u16 = 0;
+        unsafe {
+            if CURRENT_GAME_TYPE == GameType::Yoda {
+                planet = self.read_u16_le()?;
+                let size = self.read_u32_le()?;
+                index = self.read_u16_le()?;
+            }
+        }
+
         let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
@@ -56,14 +69,33 @@ pub trait ReadZoneExt: io::Read {
         let width = self.read_u16_le()?;
         let height = self.read_u16_le()?;
         let ztype = self.read_u32_le()?;
-        let padding = self.read_u16_le()?;
-        let planet_again = self.read_u16_le()?;
-        assert!(
-            planet == planet_again,
-            "Expected to find the same planet again"
-        );
+        unsafe {
+            if CURRENT_GAME_TYPE == GameType::Yoda {
+                let padding = self.read_u16_le()?;
+                let planet_again = self.read_u16_le()?;
+                assert!(
+                    planet == planet_again,
+                    "Expected to find the same planet again"
+                );
+            }
+        }
+
         let mut tile_ids = vec![0; 3 * width as usize * height as usize];
         self.read_i16_le_into(&mut tile_ids)?;
+
+        unsafe {
+            if CURRENT_GAME_TYPE == GameType::Indy {
+                return Ok(Zone {
+                    id: index as usize,
+                    width: width,
+                    height: height,
+                    hotspots: Vec::new(),
+                    npcs: Vec::new(),
+                    actions: Vec::new(),
+                    tiles: tile_ids,
+                });
+            }
+        }
 
         let hotspot_count = self.read_u16_le()?;
         let mut hotspots = Vec::with_capacity(hotspot_count as usize);
@@ -93,7 +125,7 @@ pub trait ReadZoneExt: io::Read {
         })
     }
 
-    fn read_izax(&mut self) -> Result<(Vec<NPC>, ())> {
+    fn read_izax(&mut self) -> io::Result<(Vec<NPC>, ())> {
         let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
@@ -121,7 +153,7 @@ pub trait ReadZoneExt: io::Read {
         Ok((npcs, ()))
     }
 
-    fn read_izx2(&mut self) -> Result<()> {
+    fn read_izx2(&mut self) -> io::Result<()> {
         let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
@@ -137,7 +169,7 @@ pub trait ReadZoneExt: io::Read {
         Ok(())
     }
 
-    fn read_izx3(&mut self) -> Result<()> {
+    fn read_izx3(&mut self) -> io::Result<()> {
         let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
@@ -153,7 +185,7 @@ pub trait ReadZoneExt: io::Read {
         Ok(())
     }
 
-    fn read_izx4(&mut self) -> Result<()> {
+    fn read_izx4(&mut self) -> io::Result<()> {
         let mut marker = String::with_capacity(4);
         self.take(4).read_to_string(&mut marker)?;
         assert!(
@@ -163,6 +195,41 @@ pub trait ReadZoneExt: io::Read {
         );
         let size = self.read_u32_le()?;
         let unknown = self.read_u16_le()?;
+
+        Ok(())
+    }
+
+    fn read_zaux(&mut self) -> io::Result<()> {
+        let size = self.read_u32_le()?;
+        let mut buf = Vec::new();
+        self.take(size as u64).read_to_end(&mut buf)?;
+        Ok(())
+    }
+
+    fn read_zax2(&mut self) -> io::Result<()> {
+        let size = self.read_u32_le()?;
+        let mut buf = Vec::new();
+        self.take(size as u64).read_to_end(&mut buf)?;
+        Ok(())
+    }
+    fn read_zax3(&mut self) -> io::Result<()> {
+        let size = self.read_u32_le()?;
+        let mut buf = Vec::new();
+        self.take(size as u64).read_to_end(&mut buf)?;
+        Ok(())
+    }
+    fn read_zax4(&mut self) -> io::Result<()> {
+        let size = self.read_u32_le()?;
+        let mut buf = Vec::new();
+        self.take(size as u64).read_to_end(&mut buf)?;
+        Ok(())
+    }
+
+    fn read_zone_names(&mut self, zones: &mut Vec<Zone>) -> io::Result<()> {
+        let size = self.read_u32_le()?;
+
+        let mut buf = Vec::new();
+        self.take(size as u64).read_to_end(&mut buf)?;
 
         Ok(())
     }

@@ -1,3 +1,4 @@
+use super::super::{GameType, CURRENT_GAME_TYPE};
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read, Result};
 
@@ -8,11 +9,18 @@ pub trait ReadItemsExt: io::Read {
             return Ok((index.into(), "".to_string()));
         }
 
-        let mut name = String::with_capacity(0x18);
-        let mut name_region = self.take(0x18);
-        name_region.read_to_string(&mut name)?;
-        let mut garbage = Vec::new();
-        name_region.read_to_end(&mut garbage)?;
+        let length = unsafe {
+            if CURRENT_GAME_TYPE == GameType::Yoda {
+                0x18
+            } else {
+                16
+            }
+        };
+
+        let name = match self.read_cstring_with_length(length) {
+            Ok(name) => name,
+            Err(error) => String::new(),
+        };
 
         Ok((index.into(), name.to_string()))
     }

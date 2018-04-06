@@ -1,3 +1,5 @@
+use super::super::game_type::{GameType, CURRENT_GAME_TYPE};
+use byteorder::ReadBytesExt;
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read, Result};
 
@@ -21,11 +23,22 @@ pub trait ReadCharactersExt: io::Read {
         assert!(marker == "ICHA", "Expected category marker ICHA");
         let size = self.read_u32_le();
         let mut name = String::new();
-        self.take(16).read_to_string(&mut name);
+        unsafe {
+            if CURRENT_GAME_TYPE == GameType::Yoda {
+                self.take(16).read_to_string(&mut name);
+            } else {
+                name = self.read_cstring_with_length(16)?;
+            }
+        }
+
         let char_type = self.read_i16_le();
         let movement_type = self.read_i16_le();
-        let probably_garbage_1 = self.read_i16_le();
-        let probably_garbage_2 = self.read_u32_le();
+        unsafe {
+            if CURRENT_GAME_TYPE == GameType::Yoda {
+                let probably_garbage_1 = self.read_i16_le();
+                let probably_garbage_2 = self.read_u32_le();
+            }
+        }
         let frame1 = self.read_char_frame();
         let frame2 = self.read_char_frame();
         let frame3 = self.read_char_frame();
