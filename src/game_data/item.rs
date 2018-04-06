@@ -17,12 +17,8 @@ pub trait ReadItemsExt: io::Read {
             }
         };
 
-        let name = match self.read_cstring_with_length(length) {
-            Ok(name) => name,
-            Err(error) => String::new(),
-        };
-
-        Ok((index.into(), name.to_string()))
+        let name = self.read_iso_cstring_with_length(length)?;
+        Ok((index.into(), name))
     }
 
     fn read_tile_names(&mut self) -> Result<()> {

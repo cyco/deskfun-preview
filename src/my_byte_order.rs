@@ -1,7 +1,10 @@
 use byteorder::{LittleEndian, ReadBytesExt};
+use encoding::all::ISO_8859_1;
+use encoding::{DecoderTrap, Encoding};
 use std::io;
-use std::io::Read;
-use std::iter::TakeWhile;
+use std::io::{Read, ErrorKind};
+use std::iter::*;
+use std::result;
 
 pub trait ByteOrderExt: ReadBytesExt {
     #[inline]
@@ -82,6 +85,25 @@ pub trait ByteOrderExt: ReadBytesExt {
         buffer.take(used_length as u64).read_to_string(&mut name)?;
 
         Ok(name)
+    }
+
+    #[inline]
+    fn read_iso_cstring_with_length(&mut self, length: usize) -> io::Result<String> {
+        let mut buffer = vec![0 as u8; length];
+        self.read_exact(&mut buffer)?;
+
+        let mut used_length = length;
+        for i in 0..buffer.len() {
+            if buffer[i] == 0 {
+                used_length = i;
+                break;
+            }
+        }
+
+        match ISO_8859_1.decode(&buffer[0..used_length], DecoderTrap::Strict) {
+            Err(err) => Err(io::Error::new(ErrorKind::Other, err)),
+            Ok(thing) => Ok(thing)
+        }
     }
 }
 
