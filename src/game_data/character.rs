@@ -2,6 +2,7 @@ use super::super::game_type::{GameType, CURRENT_GAME_TYPE};
 use byteorder::ReadBytesExt;
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read, Result};
+use super::marker::ReadMarkerExt;
 
 pub trait ReadCharactersExt: io::Read {
     fn read_char_frame(&mut self) -> Result<()> {
@@ -18,9 +19,7 @@ pub trait ReadCharactersExt: io::Read {
             return Ok((index.into(), ()));
         }
 
-        let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker)?;
-        assert!(marker == "ICHA", "Expected category marker ICHA");
+            self.read_category_marker("ICHA")?;
         let size = self.read_u32_le();
         let mut name = String::new();
         unsafe {

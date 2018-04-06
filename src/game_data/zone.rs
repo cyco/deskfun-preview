@@ -1,4 +1,5 @@
 use super::super::{GameType, CURRENT_GAME_TYPE};
+use super::marker::ReadMarkerExt;
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read};
 
@@ -58,13 +59,7 @@ pub trait ReadZoneExt: io::Read {
             }
         }
 
-        let mut marker = String::with_capacity(4);
-        self.take(4).read_to_string(&mut marker)?;
-        assert!(
-            marker == "IZON",
-            "Expected to find IZON category, found {} instead",
-            marker
-        );
+        self.read_category_marker("IZON")?;
         let size2 = self.read_u32_le()?;
         let width = self.read_u16_le()?;
         let height = self.read_u16_le()?;
@@ -126,13 +121,8 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_izax(&mut self) -> io::Result<(Vec<NPC>, ())> {
-        let mut marker = String::with_capacity(4);
-        self.take(4).read_to_string(&mut marker)?;
-        assert!(
-            marker == "IZAX",
-            "Expected to find IZAX category, found {} instead",
-            marker
-        );
+        self.read_category_marker("IZAX")?;
+
         let size = self.read_u32_le()?;
         let unknown_count = self.read_u16_le()?;
 
@@ -154,13 +144,8 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_izx2(&mut self) -> io::Result<()> {
-        let mut marker = String::with_capacity(4);
-        self.take(4).read_to_string(&mut marker)?;
-        assert!(
-            marker == "IZX2",
-            "Expected to find IZX2 category, found {} instead",
-            marker
-        );
+        self.read_category_marker("IZX2")?;
+
         let size = self.read_u32_le()?;
         let provided_item_count = self.read_u16_le()?;
         let mut provided_item_ids = vec![0 as u16; provided_item_count as usize];
@@ -170,13 +155,8 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_izx3(&mut self) -> io::Result<()> {
-        let mut marker = String::with_capacity(4);
-        self.take(4).read_to_string(&mut marker)?;
-        assert!(
-            marker == "IZX3",
-            "Expected to find IZAX category, found {} instead",
-            marker
-        );
+        self.read_category_marker("IZX3")?;
+
         let size = self.read_u32_le()?;
         let puzzle_npc_count = self.read_u16_le()?;
         let mut puzzle_npc_ids = vec![0 as u16; puzzle_npc_count as usize];
@@ -186,13 +166,8 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_izx4(&mut self) -> io::Result<()> {
-        let mut marker = String::with_capacity(4);
-        self.take(4).read_to_string(&mut marker)?;
-        assert!(
-            marker == "IZX4",
-            "Expected to find IZAX category, found {} instead",
-            marker
-        );
+        self.read_category_marker("IZX4")?;
+
         let size = self.read_u32_le()?;
         let unknown = self.read_u16_le()?;
 

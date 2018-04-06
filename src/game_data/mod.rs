@@ -12,6 +12,7 @@ pub mod sounds;
 pub mod tile;
 pub mod version;
 pub mod zone;
+mod marker;
 
 use self::action::ReadActionExt;
 use self::character::ReadCharactersExt;

@@ -1,18 +1,14 @@
 use super::zone::Zone;
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read, Result};
+use super::marker::ReadMarkerExt;
 
 pub struct Action {}
 
 pub trait ReadActionExt: io::Read {
     fn read_action(&mut self) -> Result<Action> {
-        let mut marker = String::with_capacity(4);
-        self.take(4).read_to_string(&mut marker)?;
-        assert!(
-            marker == "IACT",
-            "Expected to find IACT category, found {} instead",
-            marker
-        );
+        self.read_category_marker("IACT")?;
+
         let size = self.read_u32_le()?;
         let condition_count = self.read_u16_le()?;
         for _ in 0..condition_count {

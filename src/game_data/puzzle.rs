@@ -1,8 +1,9 @@
 use super::super::{GameType, CURRENT_GAME_TYPE};
+use encoding::all::ISO_8859_1;
+use encoding::{DecoderTrap, Encoding};
 use my_byte_order::ByteOrderExt;
 use std::io::{self, Read};
-use encoding::{Encoding, DecoderTrap};
-use encoding::all::ISO_8859_1;
+use super::marker::ReadMarkerExt;
 
 pub trait ReadPuzzlesExt: io::Read {
     fn read_puzzle(&mut self) -> io::Result<(i32, ())> {
@@ -11,9 +12,7 @@ pub trait ReadPuzzlesExt: io::Read {
             return Ok((index.into(), ()));
         }
 
-        let mut marker = String::new();
-        self.take(4).read_to_string(&mut marker)?;
-        assert!(marker == "IPUZ", "Expected category marker IPUZ");
+        self.read_category_marker("IPUZ")?;
         let size = self.read_u32_le();
         unsafe {
             if CURRENT_GAME_TYPE == GameType::Yoda {
@@ -26,7 +25,7 @@ pub trait ReadPuzzlesExt: io::Read {
 
         for n in 0..5 {
             let length = self.read_u16_le()?;
-            let mut buffer = vec!(0; length as usize);
+            let mut buffer = vec![0; length as usize];
             self.read_exact(&mut buffer)?;
             let text = ISO_8859_1.decode(&buffer, DecoderTrap::Strict);
         }
