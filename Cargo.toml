@@ -10,3 +10,4 @@ crate-type = ["staticlib"]
 byteorder = "*"
 image = "*"
 elapsed = "*"
+encoding = "*"
