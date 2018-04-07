@@ -1,6 +1,6 @@
 use my_byte_order::ByteOrderExt;
 use std::io;
-use std::io::{Read, Result};
+use std::io::{Read};
 use std::vec::*;
 
 use super::point::Point;
@@ -10,20 +10,16 @@ use game_data::tile;
 use game_data::zone;
 use game_data::zone::Zone;
 
+use super::game_type::ReadSaveGameTypeExt;
+
 pub struct SaveGame {
     pub current_zone_id: u16,
     pub position_on_zone: Point,
 }
 
 pub trait ReadSaveGameExt: ByteOrderExt {
-    fn read_save_game(&mut self, mut zones: &mut Vec<Zone>) -> Result<SaveGame> {
-        let mut file_magic = String::new();
-        self.take(9).read_to_string(&mut file_magic)?;
-        assert!(
-            file_magic == "YODASAV44",
-            "File header {} does not match expected value",
-            file_magic
-        );
+    fn read_save_game(&mut self, mut zones: &mut Vec<Zone>) -> io::Result<SaveGame> {
+        let game_type = self.read_save_game_type()?;
 
         let seed = self.read_u32_le()? & 0xFFFF;
         let planet = self.read_u32_le()?;
@@ -90,7 +86,7 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         })
     }
 
-    fn read_dagobah(&mut self, mut zones: &mut Vec<Zone>) -> Result<()> {
+    fn read_dagobah(&mut self, mut zones: &mut Vec<Zone>) -> io::Result<()> {
         for y in 4..=5 {
             for x in 4..=5 {
                 self.read_world_item(x, y);
@@ -101,7 +97,7 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         Ok(())
     }
 
-    fn read_world(&mut self, mut zones: &mut Vec<Zone>) -> Result<()> {
+    fn read_world(&mut self, mut zones: &mut Vec<Zone>) -> io::Result<()> {
         for y in 0..10 {
             for x in 0..10 {
                 self.read_world_item(x, y);
@@ -112,7 +108,7 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         Ok(())
     }
 
-    fn read_world_item(&mut self, x: u8, y: u8) -> Result<()> {
+    fn read_world_item(&mut self, x: u8, y: u8) -> io::Result<()> {
         let visited = self.read_u32_le()? != 0;
         let solved_1 = self.read_u32_le()? != 0;
         let solved_2 = self.read_u32_le()? != 0;
@@ -133,7 +129,7 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         Ok(())
     }
 
-    fn read_world_details(&mut self, mut zones: &mut Vec<Zone>) -> Result<()> {
+    fn read_world_details(&mut self, mut zones: &mut Vec<Zone>) -> io::Result<()> {
         let mut x: i32;
         let mut y: i32;
         loop {
@@ -158,7 +154,7 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         zone_id: i16,
         mut zones: &mut Vec<Zone>,
         mut start: usize,
-    ) -> Result<()> {
+    ) -> io::Result<()> {
         let count: usize;
         let mut zone_ids = Vec::new();
         {
@@ -206,7 +202,7 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         Ok(())
     }
 
-    fn read_room(&mut self, zone_id: i16, visited: bool, mut zones: &mut Vec<Zone>) -> Result<()> {
+    fn read_room(&mut self, zone_id: i16, visited: bool, mut zones: &mut Vec<Zone>) -> io::Result<()> {
         {
             let mut zone: &mut Zone = &mut zones[zone_id as usize];
             self.read_zone(&mut zone, visited);
@@ -217,7 +213,7 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         Ok(())
     }
 
-    fn read_zone(&mut self, zone: &mut Zone, visited: bool) -> Result<()> {
+    fn read_zone(&mut self, zone: &mut Zone, visited: bool) -> io::Result<()> {
         if visited {
             let counter = self.read_u32_le()?;
             let random = self.read_u32_le()?;
@@ -292,7 +288,7 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         Ok(())
     }
 
-    fn read_hotspot(&mut self) -> Result<Hotspot> {
+    fn read_hotspot(&mut self) -> io::Result<Hotspot> {
         let enabled = self.read_u16_le()? != 0;
         let argument = self.read_i16_le()?;
         let hotspot_type = HotspotType::from(self.read_u32_le()?);
@@ -307,7 +303,7 @@ pub trait ReadSaveGameExt: ByteOrderExt {
         })
     }
 
-    fn read_npc(&mut self) -> Result<()> {
+    fn read_npc(&mut self) -> io::Result<()> {
         let character_id = self.read_i16_le()?;
         let x = self.read_i16_le()?;
         let y = self.read_i16_le()?;
