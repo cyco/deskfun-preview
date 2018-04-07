@@ -4,6 +4,8 @@ use std::io;
 pub const WIDTH: usize = 32;
 pub const HEIGHT: usize = 32;
 
+pub type TileId = u16;
+
 pub struct Tile {
     pub attributes: u32,
     pub pixels: [u8; WIDTH * HEIGHT],

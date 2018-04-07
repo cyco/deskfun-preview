@@ -20,7 +20,7 @@ use self::character::ReadCharactersExt;
 use self::end::ReadEndExt;
 use self::hotspot::ReadHotspotExt;
 use self::item::ReadItemsExt;
-use self::puzzle::ReadPuzzlesExt;
+use self::puzzle::{Puzzle, ReadPuzzlesExt};
 use self::setup_image::ReadSetupImageExt;
 use self::sounds::ReadSoundExt;
 use self::tile::{ReadTileExt, Tile};
@@ -34,12 +34,14 @@ pub struct GameData {
     pub game_type: GameType,
     pub zones: Vec<Zone>,
     pub tiles: Vec<Tile>,
+    pub puzzles: Vec<Puzzle>,
 }
 
 pub trait ReadGameDataExt: io::Read {
     fn read_game_data(&mut self, game_type: GameType) -> io::Result<GameData> {
         let mut zones = Vec::new();
         let mut tiles = Vec::new();
+        let mut puzzles = Vec::new();
 
         loop {
             let mut category_name = String::new();
@@ -60,7 +62,10 @@ pub trait ReadGameDataExt: io::Read {
                         zones = self.read_zones(game_type)?;
                         Ok(())
                     }
-                    "PUZ2" => self.read_puzzles(game_type),
+                    "PUZ2" => {
+                        puzzles = self.read_puzzles(game_type)?;
+                        Ok(())
+                    }
                     "CHAR" => self.read_characters(game_type),
                     "CHWP" => self.read_character_weapons(),
                     "CAUX" => self.read_character_auxiliaries(),
@@ -94,6 +99,7 @@ pub trait ReadGameDataExt: io::Read {
             game_type: GameType::Yoda,
             zones: zones,
             tiles: tiles,
+            puzzles: puzzles,
         })
     }
 }
