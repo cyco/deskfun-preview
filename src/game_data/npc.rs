@@ -1,6 +1,7 @@
 use my_byte_order::ByteOrderExt;
 use std::io;
 
+#[derive(Clone)]
 pub struct NPC {}
 
 pub trait ReadNPCExt: io::Read {
