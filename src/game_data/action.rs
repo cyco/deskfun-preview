@@ -49,9 +49,12 @@ pub trait ReadActionExt: io::Read {
             }
 
             let count = self.read_u16_le()?;
+
+            let mut actions = Vec::with_capacity(count as usize);
             for _ in 0..count {
-                self.read_action()?;
+                actions.push(self.read_action()?);
             }
+            zones[idx as usize].actions = actions;
         }
 
         Ok(())
