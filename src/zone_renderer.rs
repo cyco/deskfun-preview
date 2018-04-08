@@ -68,7 +68,7 @@ impl ZoneRenderer {
                     if x - x_offset == hero.0 && y - y_offset == hero.1 && z == 1 {
                         let hero = match self.data.game_type {
                             GameType::Yoda => 799,
-                            GameType::Indy => 0,
+                            GameType::Indy => 93,
                         };
 
                         tile_renderer.render(
