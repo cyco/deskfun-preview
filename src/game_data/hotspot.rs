@@ -14,6 +14,7 @@ pub enum HotspotType {
     CrateWeapon,
     DoorIn,
     DoorOut,
+    UnknownIndyOnly,
     Lock,
     Teleporter,
     xWingFromD,
@@ -42,7 +43,7 @@ impl From<u32> for HotspotType {
             8 => HotspotType::CrateWeapon,
             9 => HotspotType::DoorIn,
             10 => HotspotType::DoorOut,
-            // 11 => intentionally missing
+            11 => HotspotType::UnknownIndyOnly,
             12 => HotspotType::Lock,
             13 => HotspotType::Teleporter,
             14 => HotspotType::xWingFromD,
@@ -71,9 +72,22 @@ pub trait ReadHotspotExt: io::Read {
     }
 
     fn read_hotspots(&mut self, zones: &mut Vec<Zone>) -> io::Result<()> {
-        let size = self.read_u32_le()? as usize;
-        let mut buf = vec!(0;size);
-        self.read_exact(&mut buf)?;
+        let _size = self.read_u32_le()? as usize;
+
+        loop {
+            let zone_id = self.read_i16_le()?;
+            if zone_id == -1 {
+                break;
+            }
+
+            let count = self.read_u16_le()?;
+            let mut hotspots = Vec::with_capacity(count as usize);
+            for _ in 0..count {
+                hotspots.push(self.read_hotspot()?);
+            }
+
+            zones[zone_id as usize].hotspots = hotspots;
+        }
 
         Ok(())
     }
