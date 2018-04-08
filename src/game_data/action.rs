@@ -14,12 +14,12 @@ pub trait ReadActionExt: io::Read {
         let size = self.read_u32_le()?;
         let condition_count = self.read_u16_le()?;
         for _ in 0..condition_count {
-            self.read_action_item();
+            self.read_action_item()?;
         }
 
         let instruction_count = self.read_u16_le()?;
         for _ in 0..instruction_count {
-            self.read_action_item();
+            self.read_action_item()?;
         }
 
         Ok(Action {})

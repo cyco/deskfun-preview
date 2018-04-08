@@ -91,9 +91,9 @@ pub trait ReadZoneExt: io::Read {
         }
 
         let (npcs, _) = self.read_izax()?;
-        self.read_izx2();
-        self.read_izx3();
-        self.read_izx4();
+        self.read_izx2()?;
+        self.read_izx3()?;
+        self.read_izx4()?;
 
         let action_count = self.read_u16_le()?;
         let mut actions = Vec::with_capacity(action_count.into());
