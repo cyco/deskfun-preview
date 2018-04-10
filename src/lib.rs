@@ -12,14 +12,13 @@ pub enum OSStatus {
 }
 
 mod point;
+mod io;
 
 mod game_type;
 use game_type::*;
 
 mod palette;
 use palette::*;
-
-mod my_byte_order;
 
 mod game_data;
 use game_data::ReadGameDataExt;
@@ -66,9 +65,9 @@ pub extern "C" fn generate_thumbnail(
 
     let (elapsed, game) = measure_time(|| {
         let mut buffer = fs::File::open(&game_path).expect("Unable to save game file!");
-        buffer
-            .read_save_game(&mut game_data.zones)
-            .expect("Unable to read game file!")
+        let (game_type, reader) = buffer.read_save_game().expect("Unable to read game file!");
+
+        reader(&mut buffer, &mut game_data.zones).expect("")
     });
     println!("reading save game: {}", elapsed);
 

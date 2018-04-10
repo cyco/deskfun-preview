@@ -1,4 +1,4 @@
-use my_byte_order::ByteOrderExt;
+use byteorder::{ReadBytesExt, LE};
 use std::io;
 
 pub const WIDTH: usize = 32;
@@ -13,13 +13,13 @@ pub struct Tile {
 
 pub trait ReadTileExt: io::Read {
     fn read_tiles(&mut self) -> io::Result<Vec<Tile>> {
-        let size = self.read_u32_le()? as usize;
+        let size = self.read_u32::<LE>()? as usize;
         let count = size / (WIDTH * HEIGHT + 4);
         let mut result = Vec::with_capacity(count);
 
         for _ in 0..count {
             result.push(Tile {
-                attributes: self.read_u32_le()?,
+                attributes: self.read_u32::<LE>()?,
                 pixels: {
                     let mut pixels = [0 as u8; WIDTH * HEIGHT];
                     self.read_exact(&mut pixels)?;

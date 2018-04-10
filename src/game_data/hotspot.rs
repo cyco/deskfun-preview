@@ -1,5 +1,5 @@
 use super::zone::Zone;
-use my_byte_order::ByteOrderExt;
+use byteorder::{ReadBytesExt, LE};
 use std::io;
 
 pub enum HotspotType {
@@ -55,12 +55,12 @@ impl From<u32> for HotspotType {
 
 pub trait ReadHotspotExt: io::Read {
     fn read_hotspot(&mut self) -> io::Result<Hotspot> {
-        let hotspot_type = HotspotType::from(self.read_u32_le()?);
+        let hotspot_type = HotspotType::from(self.read_u32::<LE>()?);
 
-        let x = self.read_i16_le()?;
-        let y = self.read_i16_le()?;
-        let enabled = self.read_u16_le()? != 0;
-        let argument = self.read_i16_le()?;
+        let x = self.read_i16::<LE>()?;
+        let y = self.read_i16::<LE>()?;
+        let enabled = self.read_u16::<LE>()? != 0;
+        let argument = self.read_i16::<LE>()?;
 
         Ok(Hotspot {
             hotspot_type: hotspot_type,
@@ -72,15 +72,15 @@ pub trait ReadHotspotExt: io::Read {
     }
 
     fn read_hotspots(&mut self, zones: &mut Vec<Zone>) -> io::Result<()> {
-        let _size = self.read_u32_le()? as usize;
+        let _size = self.read_u32::<LE>()? as usize;
 
         loop {
-            let zone_id = self.read_i16_le()?;
+            let zone_id = self.read_i16::<LE>()?;
             if zone_id == -1 {
                 break;
             }
 
-            let count = self.read_u16_le()?;
+            let count = self.read_u16::<LE>()?;
             let mut hotspots = Vec::with_capacity(count as usize);
             for _ in 0..count {
                 hotspots.push(self.read_hotspot()?);

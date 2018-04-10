@@ -1,6 +1,6 @@
 use super::super::{GameType};
 use super::marker::ReadMarkerExt;
-use my_byte_order::ByteOrderExt;
+use byteorder::{ReadBytesExt, LE};
 use std::io;
 
 use super::action::*;
@@ -32,12 +32,12 @@ impl Zone {
 
 pub trait ReadZoneExt: io::Read {
     fn read_zones(&mut self, game_type: GameType) -> io::Result<Vec<Zone>> {
-        let mut count = self.read_u16_le()?;
+        let mut count = self.read_u16::<LE>()?;
         let mut zones = Vec::with_capacity(count as usize);
 
         if game_type == GameType::Indy {
-            let unknown = self.read_u16_le()?;
-            count = self.read_u16_le()?;
+            let unknown = self.read_u16::<LE>()?;
+            count = self.read_u16::<LE>()?;
         }
 
         for i in 0..count {
@@ -50,19 +50,19 @@ pub trait ReadZoneExt: io::Read {
     fn read_zone(&mut self, mut index: u16, game_type: GameType) -> io::Result<Zone> {
         let mut planet: u16 = 0;
         if game_type == GameType::Yoda {
-            planet = self.read_u16_le()?;
-            let size = self.read_u32_le()?;
-            index = self.read_u16_le()?;
+            planet = self.read_u16::<LE>()?;
+            let size = self.read_u32::<LE>()?;
+            index = self.read_u16::<LE>()?;
         }
 
         self.read_category_marker("IZON")?;
-        let size2 = self.read_u32_le()?;
-        let width = self.read_u16_le()?;
-        let height = self.read_u16_le()?;
-        let ztype = self.read_u32_le()?;
+        let size2 = self.read_u32::<LE>()?;
+        let width = self.read_u16::<LE>()?;
+        let height = self.read_u16::<LE>()?;
+        let ztype = self.read_u32::<LE>()?;
         if game_type == GameType::Yoda {
-            let padding = self.read_u16_le()?;
-            let planet_again = self.read_u16_le()?;
+            let padding = self.read_u16::<LE>()?;
+            let planet_again = self.read_u16::<LE>()?;
             assert!(
                 planet == planet_again,
                 "Expected to find the same planet again"
@@ -70,7 +70,7 @@ pub trait ReadZoneExt: io::Read {
         }
 
         let mut tile_ids = vec![0; 3 * width as usize * height as usize];
-        self.read_i16_le_into(&mut tile_ids)?;
+        self.read_i16_into::<LE>(&mut tile_ids)?;
 
         if game_type == GameType::Indy {
             return Ok(Zone {
@@ -84,7 +84,7 @@ pub trait ReadZoneExt: io::Read {
             });
         }
 
-        let hotspot_count = self.read_u16_le()?;
+        let hotspot_count = self.read_u16::<LE>()?;
         let mut hotspots = Vec::with_capacity(hotspot_count as usize);
         for _ in 0..hotspot_count {
             hotspots.push(self.read_hotspot()?);
@@ -95,7 +95,7 @@ pub trait ReadZoneExt: io::Read {
         self.read_izx3()?;
         self.read_izx4()?;
 
-        let action_count = self.read_u16_le()?;
+        let action_count = self.read_u16::<LE>()?;
         let mut actions = Vec::with_capacity(action_count.into());
         for _ in 0..action_count {
             actions.push(self.read_action()?);
@@ -115,22 +115,22 @@ pub trait ReadZoneExt: io::Read {
     fn read_izax(&mut self) -> io::Result<(Vec<NPC>, ())> {
         self.read_category_marker("IZAX")?;
 
-        let size = self.read_u32_le()?;
-        let unknown_count = self.read_u16_le()?;
+        let size = self.read_u32::<LE>()?;
+        let unknown_count = self.read_u16::<LE>()?;
 
-        let npc_count = self.read_u16_le()?;
+        let npc_count = self.read_u16::<LE>()?;
         let mut npcs = Vec::with_capacity(npc_count.into());
         for _ in 0..npc_count {
             npcs.push(self.read_npc()?);
         }
 
-        let required_item_count = self.read_u16_le()?;
+        let required_item_count = self.read_u16::<LE>()?;
         let mut required_item_ids = vec![0 as u16; required_item_count as usize];
-        self.read_u16_le_into(&mut required_item_ids)?;
+        self.read_u16_into::<LE>(&mut required_item_ids)?;
 
-        let goal_item_count = self.read_u16_le()?;
+        let goal_item_count = self.read_u16::<LE>()?;
         let mut goal_item_ids = vec![0 as u16; goal_item_count as usize];
-        self.read_u16_le_into(&mut goal_item_ids)?;
+        self.read_u16_into::<LE>(&mut goal_item_ids)?;
 
         Ok((npcs, ()))
     }
@@ -138,10 +138,10 @@ pub trait ReadZoneExt: io::Read {
     fn read_izx2(&mut self) -> io::Result<()> {
         self.read_category_marker("IZX2")?;
 
-        let size = self.read_u32_le()?;
-        let provided_item_count = self.read_u16_le()?;
+        let size = self.read_u32::<LE>()?;
+        let provided_item_count = self.read_u16::<LE>()?;
         let mut provided_item_ids = vec![0 as u16; provided_item_count as usize];
-        self.read_u16_le_into(&mut provided_item_ids)?;
+        self.read_u16_into::<LE>(&mut provided_item_ids)?;
 
         Ok(())
     }
@@ -149,10 +149,10 @@ pub trait ReadZoneExt: io::Read {
     fn read_izx3(&mut self) -> io::Result<()> {
         self.read_category_marker("IZX3")?;
 
-        let size = self.read_u32_le()?;
-        let puzzle_npc_count = self.read_u16_le()?;
+        let size = self.read_u32::<LE>()?;
+        let puzzle_npc_count = self.read_u16::<LE>()?;
         let mut puzzle_npc_ids = vec![0 as u16; puzzle_npc_count as usize];
-        self.read_u16_le_into(&mut puzzle_npc_ids)?;
+        self.read_u16_into::<LE>(&mut puzzle_npc_ids)?;
 
         Ok(())
     }
@@ -160,14 +160,14 @@ pub trait ReadZoneExt: io::Read {
     fn read_izx4(&mut self) -> io::Result<()> {
         self.read_category_marker("IZX4")?;
 
-        let size = self.read_u32_le()?;
-        let unknown = self.read_u16_le()?;
+        let size = self.read_u32::<LE>()?;
+        let unknown = self.read_u16::<LE>()?;
 
         Ok(())
     }
 
     fn read_zaux(&mut self) -> io::Result<()> {
-        let size = self.read_u32_le()? as usize;
+        let size = self.read_u32::<LE>()? as usize;
         let mut buf = vec!(0; size);
         self.read_exact(&mut buf)?;
 
@@ -175,7 +175,7 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_zax2(&mut self) -> io::Result<()> {
-        let size = self.read_u32_le()? as usize;
+        let size = self.read_u32::<LE>()? as usize;
         let mut buf = vec!(0; size);
         self.read_exact(&mut buf)?;
 
@@ -183,7 +183,7 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_zax3(&mut self) -> io::Result<()> {
-        let size = self.read_u32_le()? as usize;
+        let size = self.read_u32::<LE>()? as usize;
         let mut buf = vec!(0; size);
         self.read_exact(&mut buf)?;
 
@@ -191,7 +191,7 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_zax4(&mut self) -> io::Result<()> {
-        let size = self.read_u32_le()? as usize;
+        let size = self.read_u32::<LE>()? as usize;
         let mut buf = vec!(0; size);
         self.read_exact(&mut buf)?;
 
@@ -199,7 +199,7 @@ pub trait ReadZoneExt: io::Read {
     }
 
     fn read_zone_names(&mut self, zones: &mut Vec<Zone>) -> io::Result<()> {
-        let size = self.read_u32_le()? as usize;
+        let size = self.read_u32::<LE>()? as usize;
         let mut buf = vec!(0; size);
         self.read_exact(&mut buf)?;
 
