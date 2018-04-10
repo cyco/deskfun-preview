@@ -96,7 +96,7 @@ pub trait ReadGameDataExt: io::Read {
         }
 
         Ok(GameData {
-            game_type: GameType::Yoda,
+            game_type: game_type,
             zones: zones,
             tiles: tiles,
             puzzles: puzzles,
