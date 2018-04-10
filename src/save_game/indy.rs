@@ -3,6 +3,7 @@ use byteorder::{ReadBytesExt, LE};
 use std::io;
 
 use super::super::game_data::zone::Zone;
+use super::super::game_data::tile::{WIDTH,HEIGHT};
 use super::super::game_type::GameType;
 use super::super::point::Point;
 
@@ -21,11 +22,12 @@ impl SaveGameReading for Indy {
         Self::read_inventory(buf)?;
 
         let current_zone_id = buf.read_u16::<LE>()?;
-        let pos_x_on_world = buf.read_u32::<LE>()?;
-        let pos_y_on_world = buf.read_u32::<LE>()?;
+        let pos_x_on_world = buf.read_u16::<LE>()?;
+        let pos_y_on_world = buf.read_u16::<LE>()?;
 
-        let mut point: Point = Point(0, 0);
-        let u1 = buf.read_i16::<LE>()?;
+        let _unknown1 = buf.read_u16::<LE>()?;
+        let x = buf.read_u16::<LE>()?;
+        let y = buf.read_u16::<LE>()?;
         let u2 = buf.read_i16::<LE>()?;
         let u3 = buf.read_i16::<LE>()?;
         let u4 = buf.read_i16::<LE>()?;
@@ -38,7 +40,7 @@ impl SaveGameReading for Indy {
 
         Ok(SaveGame {
             current_zone_id: current_zone_id,
-            position_on_zone: point,
+            position_on_zone: Point((x / WIDTH as u16) as i64, (y / HEIGHT as u16) as i64),
         })
     }
 
