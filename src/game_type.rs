@@ -20,20 +20,6 @@ impl fmt::Display for GameType {
     }
 }
 
-pub fn identify_save_game_type(path: &Path) -> io::Result<GameType> {
-    let mut file_magic = String::with_capacity(9);
-    File::open(&path)?.take(9).read_to_string(&mut file_magic)?;
-
-    match file_magic.as_str() {
-        "YODASAV44" => Ok(GameType::Yoda),
-        "INDYSAV44" => Ok(GameType::Indy),
-        _ => Err(io::Error::new(
-            io::ErrorKind::Other,
-            "Valid file header was not found.",
-        )),
-    }
-}
-
 pub fn build_game_data_path(base_path: &path::Path, game_type: GameType) -> path::PathBuf {
     match game_type {
         GameType::Yoda => base_path.join(path::Path::new("Contents/Resources/yoda.data")),
@@ -50,7 +36,7 @@ pub fn build_palette_path(base_path: &path::Path, game_type: GameType) -> path::
 
 pub trait ReadSaveGameTypeExt: io::Read {
     fn read_save_game_type(&mut self) -> io::Result<GameType> {
-        let mut buffer = vec!(0; 9);
+        let mut buffer = vec![0; 9];
         self.read_exact(&mut buffer)?;
 
         match String::from_utf8(buffer).expect("").as_str() {

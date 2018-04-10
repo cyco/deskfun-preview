@@ -24,7 +24,7 @@ mod palette;
 use palette::*;
 
 mod game_data;
-use game_data::{GameData, ReadGameDataExt};
+use game_data::ReadGameDataExt;
 
 mod save_game;
 use save_game::ReadSaveGameExt;
