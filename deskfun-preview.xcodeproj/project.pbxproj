@@ -31,7 +31,7 @@
 		8398157F207413E700F22695 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8398157E207413E700F22695 /* AppDelegate.swift */; };
 		83981581207413E900F22695 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83981580207413E900F22695 /* Assets.xcassets */; };
 		83981584207413E900F22695 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 83981582207413E900F22695 /* MainMenu.xib */; };
-		8398158D2074141C00F22695 /* webfun-preview.qlgenerator in Copy QuickLook Plugin */ = {isa = PBXBuildFile; fileRef = 83243FCA2071293000C6B4AE /* webfun-preview.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8398158D2074141C00F22695 /* deskfun-preview.qlgenerator in Copy QuickLook Plugin */ = {isa = PBXBuildFile; fileRef = 83243FCA2071293000C6B4AE /* deskfun-preview.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83B063B12076AE910026DFC3 /* indy.data in Resources */ = {isa = PBXBuildFile; fileRef = 83B063B02076A9D70026DFC3 /* indy.data */; };
 /* End PBXBuildFile section */
 
@@ -59,7 +59,7 @@
 			dstPath = Contents/Library/QuickLook;
 			dstSubfolderSpec = 1;
 			files = (
-				8398158D2074141C00F22695 /* webfun-preview.qlgenerator in Copy QuickLook Plugin */,
+				8398158D2074141C00F22695 /* deskfun-preview.qlgenerator in Copy QuickLook Plugin */,
 			);
 			name = "Copy QuickLook Plugin";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -67,7 +67,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		83243FCA2071293000C6B4AE /* webfun-preview.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "webfun-preview.qlgenerator"; sourceTree = BUILT_PRODUCTS_DIR; };
+		83243FCA2071293000C6B4AE /* deskfun-preview.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "deskfun-preview.qlgenerator"; sourceTree = BUILT_PRODUCTS_DIR; };
 		83243FCD2071293000C6B4AE /* GenerateThumbnailForURL.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = GenerateThumbnailForURL.c; sourceTree = "<group>"; };
 		83243FCF2071293000C6B4AE /* GeneratePreviewForURL.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = GeneratePreviewForURL.c; sourceTree = "<group>"; };
 		83243FD12071293000C6B4AE /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
@@ -78,7 +78,7 @@
 		83243FE12071297F00C6B4AE /* yoda.data */ = {isa = PBXFileReference; lastKnownFileType = file; path = yoda.data; sourceTree = "<group>"; };
 		83243FE22071297F00C6B4AE /* indy.pal */ = {isa = PBXFileReference; lastKnownFileType = file; path = indy.pal; sourceTree = "<group>"; };
 		83243FE32071297F00C6B4AE /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8398157C207413E700F22695 /* WebFun (preview).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WebFun (preview).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8398157C207413E700F22695 /* DeskFun (preview).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DeskFun (preview).app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8398157E207413E700F22695 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		83981580207413E900F22695 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		83981583207413E900F22695 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -92,7 +92,7 @@
 			children = (
 				83243FDB2071297F00C6B4AE /* assets */,
 				83243FCC2071293000C6B4AE /* src */,
-				8398157D207413E700F22695 /* WebFun (preview) */,
+				8398157D207413E700F22695 /* DeskFun (preview) */,
 				83243FCB2071293000C6B4AE /* Products */,
 				832440092071547D00C6B4AE /* Frameworks */,
 			);
@@ -101,8 +101,8 @@
 		83243FCB2071293000C6B4AE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				83243FCA2071293000C6B4AE /* webfun-preview.qlgenerator */,
-				8398157C207413E700F22695 /* WebFun (preview).app */,
+				83243FCA2071293000C6B4AE /* deskfun-preview.qlgenerator */,
+				8398157C207413E700F22695 /* DeskFun (preview).app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -147,7 +147,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		8398157D207413E700F22695 /* WebFun (preview) */ = {
+		8398157D207413E700F22695 /* DeskFun (preview) */ = {
 			isa = PBXGroup;
 			children = (
 				8398157E207413E700F22695 /* AppDelegate.swift */,
@@ -155,15 +155,15 @@
 				83981582207413E900F22695 /* MainMenu.xib */,
 				83981585207413E900F22695 /* Info.plist */,
 			);
-			path = "WebFun (preview)";
+			path = "DeskFun (preview)";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		83243FC92071293000C6B4AE /* webfun-preview */ = {
+		83243FC92071293000C6B4AE /* deskfun-preview */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 83243FD62071293000C6B4AE /* Build configuration list for PBXNativeTarget "webfun-preview" */;
+			buildConfigurationList = 83243FD62071293000C6B4AE /* Build configuration list for PBXNativeTarget "deskfun-preview" */;
 			buildPhases = (
 				832440082071541A00C6B4AE /* Build Library */,
 				83243FC52071293000C6B4AE /* Sources */,
@@ -174,14 +174,14 @@
 			dependencies = (
 				83B063AF2076A0B30026DFC3 /* PBXTargetDependency */,
 			);
-			name = "webfun-preview";
+			name = "deskfun-preview";
 			productName = "webfun-preview";
-			productReference = 83243FCA2071293000C6B4AE /* webfun-preview.qlgenerator */;
+			productReference = 83243FCA2071293000C6B4AE /* deskfun-preview.qlgenerator */;
 			productType = "com.apple.product-type.bundle";
 		};
-		8398157B207413E700F22695 /* WebFun (preview) */ = {
+		8398157B207413E700F22695 /* DeskFun (preview) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 83981589207413E900F22695 /* Build configuration list for PBXNativeTarget "WebFun (preview)" */;
+			buildConfigurationList = 83981589207413E900F22695 /* Build configuration list for PBXNativeTarget "DeskFun (preview)" */;
 			buildPhases = (
 				83981578207413E700F22695 /* Sources */,
 				8398157A207413E700F22695 /* Resources */,
@@ -192,9 +192,9 @@
 			dependencies = (
 				8398158C2074141800F22695 /* PBXTargetDependency */,
 			);
-			name = "WebFun (preview)";
+			name = "DeskFun (preview)";
 			productName = "WebFun (preview)";
-			productReference = 8398157C207413E700F22695 /* WebFun (preview).app */;
+			productReference = 8398157C207413E700F22695 /* DeskFun (preview).app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -223,7 +223,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83243FC42071293000C6B4AE /* Build configuration list for PBXProject "webfun-preview" */;
+			buildConfigurationList = 83243FC42071293000C6B4AE /* Build configuration list for PBXProject "deskfun-preview" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -236,8 +236,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				83243FC92071293000C6B4AE /* webfun-preview */,
-				8398157B207413E700F22695 /* WebFun (preview) */,
+				83243FC92071293000C6B4AE /* deskfun-preview */,
+				8398157B207413E700F22695 /* DeskFun (preview) */,
 				83B063A72076900C0026DFC3 /* Fetch Game Data */,
 			);
 		};
@@ -337,7 +337,7 @@
 /* Begin PBXTargetDependency section */
 		8398158C2074141800F22695 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 83243FC92071293000C6B4AE /* webfun-preview */;
+			target = 83243FC92071293000C6B4AE /* deskfun-preview */;
 			targetProxy = 8398158B2074141800F22695 /* PBXContainerItemProxy */;
 		};
 		83B063AF2076A0B30026DFC3 /* PBXTargetDependency */ = {
@@ -511,12 +511,12 @@
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "WebFun (preview)/Info.plist";
+				INFOPLIST_FILE = "DeskFun (preview)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.WebFun-preview";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.webfun-preview-generator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -532,12 +532,12 @@
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "WebFun (preview)/Info.plist";
+				INFOPLIST_FILE = "DeskFun (preview)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.WebFun-preview";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.webfun-preview-generator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -565,7 +565,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		83243FC42071293000C6B4AE /* Build configuration list for PBXProject "webfun-preview" */ = {
+		83243FC42071293000C6B4AE /* Build configuration list for PBXProject "deskfun-preview" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83243FD42071293000C6B4AE /* Debug */,
@@ -574,7 +574,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83243FD62071293000C6B4AE /* Build configuration list for PBXNativeTarget "webfun-preview" */ = {
+		83243FD62071293000C6B4AE /* Build configuration list for PBXNativeTarget "deskfun-preview" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83243FD72071293000C6B4AE /* Debug */,
@@ -583,7 +583,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83981589207413E900F22695 /* Build configuration list for PBXNativeTarget "WebFun (preview)" */ = {
+		83981589207413E900F22695 /* Build configuration list for PBXNativeTarget "DeskFun (preview)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83981587207413E900F22695 /* Debug */,
