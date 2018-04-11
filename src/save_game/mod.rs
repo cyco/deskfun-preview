@@ -177,10 +177,10 @@ pub trait SaveGameReading {
                 let planet = buf.read_i16::<LE>()?;
             }
 
-            let mut tile_ids = Vec::new();
-            for _ in 0..zone.width as u64 * zone.height as u64 * zone::LAYERS as u64 {
-                tile_ids.push(buf.read_i16::<LE>());
-            }
+            let tile_count = zone.width as usize * zone.height as usize * zone::LAYERS as usize;
+            let mut tile_ids = vec!(0 as i16; tile_count);
+            buf.read_i16_into::<LE>(&mut tile_ids)?;
+            zone.tiles = tile_ids;
         }
 
         let __visited = Self::read_bool(buf)?;

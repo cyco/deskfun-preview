@@ -31,4 +31,3 @@ Xcode will place the QuickLook plugin and a dummy app in `build/Release`. Launch
 -   parse and render npcs
 -   show world map in preview
 -   display inventory in preview
--   use tiles from save game for rendering
