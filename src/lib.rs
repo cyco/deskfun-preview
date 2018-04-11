@@ -1,9 +1,3 @@
-use std::ffi::CStr;
-use std::fs;
-use std::os::raw::c_char;
-use std::panic;
-use std::path;
-
 extern crate byteorder;
 extern crate elapsed;
 extern crate encoding;
@@ -14,29 +8,28 @@ pub enum OSStatus {
     SomeError = 1,
 }
 
-mod io;
-mod point;
-
-mod game_type;
-use game_type::*;
-
-mod palette;
-use palette::*;
+use elapsed::measure_time;
+use image::png::PNGEncoder;
+use std::ffi::CStr;
+use std::fs;
+use std::os::raw::c_char;
+use std::panic;
+use std::path;
 
 mod game_data;
-use game_data::ReadGameDataExt;
-
+mod game_type;
+mod io;
+mod palette;
+mod point;
 mod save_game;
-use save_game::ReadSaveGameExt;
-
 mod tile_renderer;
-
 mod zone_renderer;
+
+use game_data::ReadGameDataExt;
+use game_type::*;
+use palette::*;
+use save_game::ReadSaveGameExt;
 use zone_renderer::ZoneRenderer;
-
-use image::png::PNGEncoder;
-
-use elapsed::measure_time;
 
 #[no_mangle]
 pub extern "C" fn generate_thumbnail(

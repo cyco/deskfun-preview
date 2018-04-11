@@ -1,9 +1,6 @@
 use std::fmt;
-use std::fs::File;
 use std::io;
-use std::io::Read;
 use std::path;
-use std::path::Path;
 
 #[derive(PartialEq, Copy, Clone, Debug)]
 pub enum GameType {

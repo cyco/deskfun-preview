@@ -9,16 +9,11 @@ use std::ops::Range;
 pub use self::read_ext::ReadSaveGameExt;
 pub use self::save_game::*;
 
-use self::indy::*;
-use self::yoda::*;
-
 use super::game_data::hotspot::{Hotspot, HotspotType};
 use super::game_data::npc::NPC;
-use super::game_data::tile;
 use super::game_data::zone;
 use super::game_data::zone::Zone;
 use super::game_type::GameType;
-use super::point::Point;
 
 type PuzzleId = u16;
 type TileId = u16;
