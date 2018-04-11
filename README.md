@@ -9,3 +9,9 @@ A command line tool and QuickLook plugin to render icons and previews for _Yoda 
 ## How to build
 ### Command Line
 ### QuickLook Plugin
+
+## Todo
+- parse and render npcs
+- show world map in preview
+- display inventory in preview
+- use tiles from save game for rendering
