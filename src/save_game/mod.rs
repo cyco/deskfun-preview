@@ -188,7 +188,7 @@ pub trait SaveGameReading {
 
         if visited {
             Self::read_npcs(buf, &mut zone, game_type)?;
-            Self::read_actions(buf, &zone)?;
+            Self::read_actions(buf, &mut zone)?;
         }
 
         Ok(())
@@ -239,7 +239,7 @@ pub trait SaveGameReading {
         Ok(())
     }
 
-    fn read_actions(buf: &mut io::Read, zone: &Zone) -> io::Result<()> {
+    fn read_actions(buf: &mut io::Read, zone: &mut Zone) -> io::Result<()> {
         let action_count = Self::read_int(buf)?;
         if action_count < 0 {
             return Ok(());
@@ -252,8 +252,8 @@ pub trait SaveGameReading {
             action_count
         );
 
-        for _ in 0..action_count {
-            let action_enabled = Self::read_bool(buf);
+        for i in 0..action_count as usize {
+            zone.actions[i].enabled = Self::read_bool(buf)?;
         }
 
         Ok(())
