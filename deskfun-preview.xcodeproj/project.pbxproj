@@ -479,7 +479,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/target/debug",
 				);
-				OTHER_LDFLAGS = "-lwebfun_preview";
+				OTHER_LDFLAGS = "-ldeskfun_preview";
 				PRODUCT_BUNDLE_IDENTIFIER = de.ccl.webfun.qlgenerator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = qlgenerator;
@@ -497,7 +497,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/target/release",
 				);
-				OTHER_LDFLAGS = "-lwebfun_preview";
+				OTHER_LDFLAGS = "-ldeskfun_preview";
 				PRODUCT_BUNDLE_IDENTIFIER = de.ccl.webfun.qlgenerator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = qlgenerator;
