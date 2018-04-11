@@ -29,7 +29,7 @@ use game_data::ReadGameDataExt;
 use game_type::*;
 use palette::*;
 use save_game::ReadSaveGameExt;
-use zone_renderer::ZoneRenderer;
+use zone_renderer::render_zone;
 
 #[no_mangle]
 pub extern "C" fn generate_thumbnail(
@@ -72,8 +72,12 @@ pub extern "C" fn generate_thumbnail(
 
         let mut buffer = Vec::new();
         let (elapsed, _) = measure_time(|| {
-            let renderer = ZoneRenderer::new(game_data, palette);
-            let result = renderer.render(game.current_zone_id, game.position_on_zone);
+            let result = render_zone(
+                &game_data,
+                &palette,
+                game.current_zone_id,
+                game.position_on_zone,
+            );
             {
                 let encoder = PNGEncoder::new(&mut buffer);
                 encoder
