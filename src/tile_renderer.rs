@@ -2,11 +2,6 @@ use super::game_data::tile::{Tile, HEIGHT, WIDTH};
 use super::game_data::GameData;
 use super::palette::{Color, Palette};
 
-pub struct TileRenderer {
-    palette: Palette,
-    tiles: Vec<Tile>,
-}
-
 pub fn render_tile(
     data: &GameData,
     palette: &Palette,
