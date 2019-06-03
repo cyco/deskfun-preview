@@ -245,15 +245,12 @@ pub trait SaveGameReading {
             return Ok(());
         }
 
-        assert!(
-            action_count as usize == zone.actions.len(),
-            "Number of actions can't be changed from {} to {}!",
-            zone.actions.len(),
-            action_count
-        );
-
-        for i in 0..action_count as usize {
+        for i in 0..zone.actions.len() as usize {
             zone.actions[i].enabled = Self::read_bool(buf)?;
+        }
+
+        for _ in zone.actions.len()..action_count as usize {
+            Self::read_bool(buf)?;
         }
 
         Ok(())
