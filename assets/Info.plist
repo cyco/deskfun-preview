@@ -29,26 +29,6 @@
 	<string>1</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
-	<key>UTImportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>DeskFun Save Game</string>
-			<key>UTTypeIdentifier</key>
-			<string>com.lucasarts.deskfun.save-game</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>wld</string>
-				</array>
-			</dict>
-		</dict>
-	</array>
 	<key>CFPlugInDynamicRegistration</key>
 	<string>NO</string>
 	<key>CFPlugInFactories</key>
@@ -77,5 +57,25 @@
 	<false/>
 	<key>QLThumbnailMinimumSize</key>
 	<real>17</real>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>DeskFun Save Game</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.lucasarts.deskfun.save-game</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>wld</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

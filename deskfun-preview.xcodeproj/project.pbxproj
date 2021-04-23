@@ -78,7 +78,7 @@
 		83243FE12071297F00C6B4AE /* yoda.data */ = {isa = PBXFileReference; lastKnownFileType = file; path = yoda.data; sourceTree = "<group>"; };
 		83243FE22071297F00C6B4AE /* indy.pal */ = {isa = PBXFileReference; lastKnownFileType = file; path = indy.pal; sourceTree = "<group>"; };
 		83243FE32071297F00C6B4AE /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8398157C207413E700F22695 /* DeskFun (preview).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DeskFun (preview).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8398157C207413E700F22695 /* DeskFun Preview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DeskFun Preview.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8398157E207413E700F22695 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		83981580207413E900F22695 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		83981583207413E900F22695 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -102,7 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				83243FCA2071293000C6B4AE /* deskfun-preview.qlgenerator */,
-				8398157C207413E700F22695 /* DeskFun (preview).app */,
+				8398157C207413E700F22695 /* DeskFun Preview.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -165,6 +165,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 83243FD62071293000C6B4AE /* Build configuration list for PBXNativeTarget "deskfun-preview" */;
 			buildPhases = (
+				83991DA32632D05F003286E9 /* Install targets */,
 				832440082071541A00C6B4AE /* Build Library */,
 				83243FC52071293000C6B4AE /* Sources */,
 				83243FC82071293000C6B4AE /* Resources */,
@@ -179,9 +180,9 @@
 			productReference = 83243FCA2071293000C6B4AE /* deskfun-preview.qlgenerator */;
 			productType = "com.apple.product-type.bundle";
 		};
-		8398157B207413E700F22695 /* DeskFun (preview) */ = {
+		8398157B207413E700F22695 /* DeskFun Preview */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 83981589207413E900F22695 /* Build configuration list for PBXNativeTarget "DeskFun (preview)" */;
+			buildConfigurationList = 83981589207413E900F22695 /* Build configuration list for PBXNativeTarget "DeskFun Preview" */;
 			buildPhases = (
 				83981578207413E700F22695 /* Sources */,
 				8398157A207413E700F22695 /* Resources */,
@@ -192,9 +193,9 @@
 			dependencies = (
 				8398158C2074141800F22695 /* PBXTargetDependency */,
 			);
-			name = "DeskFun (preview)";
+			name = "DeskFun Preview";
 			productName = "WebFun (preview)";
-			productReference = 8398157C207413E700F22695 /* DeskFun (preview).app */;
+			productReference = 8398157C207413E700F22695 /* DeskFun Preview.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -237,7 +238,7 @@
 			projectRoot = "";
 			targets = (
 				83243FC92071293000C6B4AE /* deskfun-preview */,
-				8398157B207413E700F22695 /* DeskFun (preview) */,
+				8398157B207413E700F22695 /* DeskFun Preview */,
 				83B063A72076900C0026DFC3 /* Fetch Game Data */,
 			);
 		};
@@ -279,8 +280,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "if [[ \"$CONFIGURATION\" == \"Debug\" ]]; then\n    $HOME/.cargo/bin/cargo build\nelse\n    $HOME/.cargo/bin/cargo build --release\nfi\n";
-			showEnvVarsInLog = 0;
+			shellScript = "export PATH=\"~/.cargo/bin:$PATH\"\n\n# See https://github.com/TimNN/cargo-lipo/issues/41#issuecomment-774793892\nif [[ -n \"${DEVELOPER_SDK_DIR:-}\" ]]; then\n  # Assume we're in Xcode, which means we're probably cross-compiling.\n  # In this case, we need to add an extra library search path for build scripts and proc-macros,\n  # which run on the host instead of the target.\n  # (macOS Big Sur does not have linkable libraries in /usr/lib/.)\n  export LIBRARY_PATH=\"${DEVELOPER_SDK_DIR}/MacOSX.sdk/usr/lib:${LIBRARY_PATH:-}\"\nfi\n\ncargo lipo --xcode-integ\n";
+		};
+		83991DA32632D05F003286E9 /* Install targets */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Install targets";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "export PATH=\"$HOME/.cargo/bin:$PATH\"\n\necho $PATH\n\nrustup target add x86_64-apple-darwin aarch64-apple-darwin\n";
 		};
 		83B063AB207690100026DFC3 /* Fetch "Yoda Stories" */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -480,10 +498,10 @@
 				INSTALL_PATH = /Library/QuickLook;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/target/debug",
+					"$(PROJECT_DIR)/target/universal/debug",
 				);
 				OTHER_LDFLAGS = "-ldeskfun_preview";
-				PRODUCT_BUNDLE_IDENTIFIER = de.ccl.webfun.qlgenerator;
+				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.deskfun-preview.qlgenerator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = qlgenerator;
 			};
@@ -498,10 +516,10 @@
 				INSTALL_PATH = /Library/QuickLook;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/target/release",
+					"$(PROJECT_DIR)/target/universal/release",
 				);
 				OTHER_LDFLAGS = "-ldeskfun_preview";
-				PRODUCT_BUNDLE_IDENTIFIER = de.ccl.webfun.qlgenerator;
+				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.deskfun-preview.qlgenerator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = qlgenerator;
 			};
@@ -520,7 +538,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.webfun-preview-generator";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.deskfun-preview";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -542,7 +560,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.webfun-preview-generator";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.ccl.deskfun-preview";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -588,7 +606,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83981589207413E900F22695 /* Build configuration list for PBXNativeTarget "DeskFun (preview)" */ = {
+		83981589207413E900F22695 /* Build configuration list for PBXNativeTarget "DeskFun Preview" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83981587207413E900F22695 /* Debug */,
