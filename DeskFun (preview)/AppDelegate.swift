@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  WebFun (preview)
+//  DeskFun Preview)
 //
 //  Created by Christoph Leimbrock on 03.04.18.
 //  Copyright © 2018 Christoph Leimbrock. All rights reserved.

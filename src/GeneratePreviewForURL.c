@@ -2,7 +2,7 @@
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
 
-#define BUNDLE_IDENTIFIER "de.ccl.webfun.qlgenerator"
+#define BUNDLE_IDENTIFIER "de.ccl.deskfun-preview.qlgenerator"
 
 extern OSStatus generate_thumbnail(const char * bundlePath, const char * gamePath, size_t* length, uint8 **buffer);
 
@@ -19,6 +19,10 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 {
     CFStringRef path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
     CFBundleRef bundle = CFBundleGetBundleWithIdentifier(CFSTR(BUNDLE_IDENTIFIER));
+    if (bundle == NULL) {
+        return -1;
+    }
+    
     CFURLRef bundleURL = CFBundleCopyBundleURL(bundle);
     CFStringRef bundlePath = CFURLCopyFileSystemPath(bundleURL, kCFURLPOSIXPathStyle);
     
