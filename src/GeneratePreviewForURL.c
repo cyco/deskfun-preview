@@ -33,10 +33,10 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
     uint8 *buffer = NULL;
     OSStatus result = generate_thumbnail(bundle_path, cpath, &length, &buffer);
     
-    CFDataRef imageData = CFDataCreateWithBytesNoCopy(NULL, buffer, length, NULL);
-    QLPreviewRequestSetDataRepresentation(preview, imageData, kUTTypeImage, NULL);
+    CFDataRef imageData = CFDataCreateWithBytesNoCopy(NULL, buffer, length, kCFAllocatorNull);
+    QLPreviewRequestSetDataRepresentation(preview, imageData, kUTTypePNG, NULL);
     CFRelease(imageData);
-    
+        
     CFRelease(bundlePath);
     CFRelease(bundleURL);
     CFRelease(path);

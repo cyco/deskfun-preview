@@ -33,9 +33,15 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
     uint8 *buffer = NULL;
     OSStatus result = generate_thumbnail(bundle_path, cpath, &length, &buffer);
     
-    CFDataRef imageData = CFDataCreateWithBytesNoCopy(NULL, buffer, length, NULL);
-    QLThumbnailRequestSetImageWithData(thumbnail, imageData, NULL);
+    const void* keys[1] = { kCGImageSourceTypeIdentifierHint };
+    CFTypeRef values[1] = { kUTTypePNG };
+    CFDictionaryRef properties = CFDictionaryCreate(NULL, keys, values, 1, NULL, NULL);
+    
+    CFDataRef imageData = CFDataCreateWithBytesNoCopy(NULL, buffer, length, kCFAllocatorNull);
+    QLThumbnailRequestSetImageWithData(thumbnail, imageData, properties);
     CFRelease(imageData);
+    
+    CFRelease(properties);
     
     CFRelease(bundlePath);
     CFRelease(bundleURL);
