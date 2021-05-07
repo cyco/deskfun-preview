@@ -49,7 +49,7 @@ pub trait ReadGameDataExt: io::Read {
                 .read_to_string(&mut category_name)
                 .expect("Unable to read category name");
 
-            let (elapsed, result) = measure_time(|| -> io::Result<u8> {
+            let (_elapsed, result) = measure_time(|| -> io::Result<u8> {
                 let _ = match category_name.as_ref() {
                     "VERS" => self.read_version(),
                     "STUP" => self.read_setup_image(),
@@ -96,10 +96,10 @@ pub trait ReadGameDataExt: io::Read {
         }
 
         Ok(GameData {
-            game_type: game_type,
-            zones: zones,
-            tiles: tiles,
-            puzzles: puzzles,
+            game_type,
+            zones,
+            tiles,
+            puzzles,
         })
     }
 }

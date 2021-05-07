@@ -21,10 +21,10 @@ type TileId = u16;
 pub trait SaveGameReading {
     const MAGIC: &'static str;
 
-    fn read_int(buf: &mut io::Read) -> io::Result<i64>;
-    fn read_bool(buf: &mut io::Read) -> io::Result<bool>;
+    fn read_int(buf: &mut dyn io::Read) -> io::Result<i64>;
+    fn read_bool(buf: &mut dyn io::Read) -> io::Result<bool>;
 
-    fn read_puzzles(buf: &mut io::Read) -> io::Result<Vec<PuzzleId>> {
+    fn read_puzzles(buf: &mut dyn io::Read) -> io::Result<Vec<PuzzleId>> {
         let puzzle_id_count_1 = buf.read_u16::<LE>()?;
         let mut puzzle_ids_1 = Vec::with_capacity(puzzle_id_count_1 as usize);
         for _ in 0..puzzle_id_count_1 {
@@ -33,8 +33,8 @@ pub trait SaveGameReading {
         Ok(puzzle_ids_1)
     }
 
-    fn read_save_game(buf: &mut io::Read, zones: &mut Vec<Zone>) -> io::Result<SaveGame>;
-    fn read_inventory(mut buf: &mut io::Read) -> io::Result<Vec<TileId>> {
+    fn read_save_game(buf: &mut dyn io::Read, zones: &mut Vec<Zone>) -> io::Result<SaveGame>;
+    fn read_inventory(mut buf: &mut dyn io::Read) -> io::Result<Vec<TileId>> {
         let count = Self::read_int(&mut buf)?;
 
         let mut item_ids = Vec::with_capacity(count as usize);
@@ -46,7 +46,7 @@ pub trait SaveGameReading {
     }
 
     fn read_world(
-        buf: &mut io::Read,
+        buf: &mut dyn io::Read,
         mut zones: &mut Vec<Zone>,
         game_type: GameType,
         x_range: Range<u8>,
@@ -62,10 +62,10 @@ pub trait SaveGameReading {
         Ok(())
     }
 
-    fn read_world_item(buf: &mut io::Read, x: u8, y: u8) -> io::Result<()>;
+    fn read_world_item(buf: &mut dyn io::Read, x: u8, y: u8) -> io::Result<()>;
 
     fn read_world_details(
-        buf: &mut io::Read,
+        buf: &mut dyn io::Read,
         mut zones: &mut Vec<Zone>,
         game_type: GameType,
     ) -> io::Result<()> {
@@ -90,7 +90,7 @@ pub trait SaveGameReading {
     }
 
     fn read_rooms(
-        buf: &mut io::Read,
+        buf: &mut dyn io::Read,
         zone_id: i16,
         mut zones: &mut Vec<Zone>,
         mut start: usize,
@@ -145,7 +145,7 @@ pub trait SaveGameReading {
     }
 
     fn read_room(
-        buf: &mut io::Read,
+        buf: &mut dyn io::Read,
         zone_id: i16,
         visited: bool,
         mut zones: &mut Vec<Zone>,
@@ -161,24 +161,24 @@ pub trait SaveGameReading {
     }
 
     fn read_zone(
-        buf: &mut io::Read,
+        buf: &mut dyn io::Read,
         mut zone: &mut Zone,
         visited: bool,
         game_type: GameType,
     ) -> io::Result<()> {
         if visited {
-            let counter = Self::read_int(buf)?;
-            let random = Self::read_int(buf)?;
-            let doorInX = Self::read_int(buf)?;
-            let doorInY = Self::read_int(buf)?;
+            let _counter = Self::read_int(buf)?;
+            let _random = Self::read_int(buf)?;
+            let _door_in_x = Self::read_int(buf)?;
+            let _door_in_y = Self::read_int(buf)?;
 
             if game_type == GameType::Yoda {
-                let padding = buf.read_u16::<LE>()?;
-                let planet = buf.read_i16::<LE>()?;
+                let _padding = buf.read_u16::<LE>()?;
+                let _planet = buf.read_i16::<LE>()?;
             }
 
             let tile_count = zone.width as usize * zone.height as usize * zone::LAYERS as usize;
-            let mut tile_ids = vec!(0 as i16; tile_count);
+            let mut tile_ids = vec![0 as i16; tile_count];
             buf.read_i16_into::<LE>(&mut tile_ids)?;
             zone.tiles = tile_ids;
         }
@@ -194,7 +194,11 @@ pub trait SaveGameReading {
         Ok(())
     }
 
-    fn read_hotspots(buf: &mut io::Read, zone: &mut Zone, game_type: GameType) -> io::Result<()> {
+    fn read_hotspots(
+        buf: &mut dyn io::Read,
+        zone: &mut Zone,
+        game_type: GameType,
+    ) -> io::Result<()> {
         let count = Self::read_int(buf)?;
         if count < 0 {
             return Ok(());
@@ -215,7 +219,7 @@ pub trait SaveGameReading {
         Ok(())
     }
 
-    fn read_npcs(buf: &mut io::Read, zone: &mut Zone, game_type: GameType) -> io::Result<()> {
+    fn read_npcs(buf: &mut dyn io::Read, zone: &mut Zone, game_type: GameType) -> io::Result<()> {
         let npc_count = Self::read_int(buf)?;
         if npc_count < 0 {
             return Ok(());
@@ -239,7 +243,7 @@ pub trait SaveGameReading {
         Ok(())
     }
 
-    fn read_actions(buf: &mut io::Read, zone: &mut Zone) -> io::Result<()> {
+    fn read_actions(buf: &mut dyn io::Read, zone: &mut Zone) -> io::Result<()> {
         let action_count = Self::read_int(buf)?;
         if action_count < 0 {
             return Ok(());
@@ -256,14 +260,14 @@ pub trait SaveGameReading {
         Ok(())
     }
 
-    fn read_hotspot_indy(buf: &mut io::Read, hotspot: &mut Hotspot) -> io::Result<()> {
+    fn read_hotspot_indy(buf: &mut dyn io::Read, hotspot: &mut Hotspot) -> io::Result<()> {
         hotspot.enabled = buf.read_u16::<LE>()? != 0;
         hotspot.argument = buf.read_i16::<LE>()?;
 
         Ok(())
     }
 
-    fn read_hotspot(buf: &mut io::Read) -> io::Result<Hotspot> {
+    fn read_hotspot(buf: &mut dyn io::Read) -> io::Result<Hotspot> {
         let enabled = buf.read_u16::<LE>()? != 0;
         let argument = buf.read_i16::<LE>()?;
         let hotspot_type = HotspotType::from(buf.read_u32::<LE>()?);
@@ -271,13 +275,13 @@ pub trait SaveGameReading {
         let y = buf.read_i16::<LE>()?;
 
         Ok(Hotspot {
-            enabled: enabled,
-            argument: argument,
-            x: x,
-            y: y,
-            hotspot_type: hotspot_type,
+            enabled,
+            argument,
+            x,
+            y,
+            hotspot_type,
         })
     }
 
-    fn read_npc(buf: &mut io::Read) -> io::Result<()>;
+    fn read_npc(buf: &mut dyn io::Read) -> io::Result<()>;
 }

@@ -17,8 +17,8 @@ pub enum HotspotType {
     UnknownIndyOnly,
     Lock,
     Teleporter,
-    xWingFromD,
-    xWingToD,
+    XWingFromD,
+    XWingToD,
 }
 
 pub struct Hotspot {
@@ -46,8 +46,8 @@ impl From<u32> for HotspotType {
             11 => HotspotType::UnknownIndyOnly,
             12 => HotspotType::Lock,
             13 => HotspotType::Teleporter,
-            14 => HotspotType::xWingFromD,
-            15 => HotspotType::xWingToD,
+            14 => HotspotType::XWingFromD,
+            15 => HotspotType::XWingToD,
             _ => panic!("Invalid hotspot type {} given.", n),
         }
     }

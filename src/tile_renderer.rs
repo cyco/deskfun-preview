@@ -1,4 +1,4 @@
-use super::game_data::tile::{Tile, HEIGHT, WIDTH};
+use super::game_data::tile::{HEIGHT, WIDTH};
 use super::game_data::GameData;
 use super::palette::{Color, Palette};
 

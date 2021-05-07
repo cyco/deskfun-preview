@@ -7,11 +7,11 @@ use game_data::zone::Zone;
 
 use super::super::game_type::*;
 
-use super::SaveGameReading;
 use super::indy::Indy;
 use super::yoda::Yoda;
+use super::SaveGameReading;
 
-type SaveGameReader = fn(&mut io::Read, &mut Vec<Zone>) -> io::Result<SaveGame>;
+type SaveGameReader = fn(&mut dyn io::Read, &mut Vec<Zone>) -> io::Result<SaveGame>;
 
 pub trait ReadSaveGameExt: ReadBytesExt + std::marker::Sized {
     fn read_save_game_type(&mut self) -> io::Result<GameType> {

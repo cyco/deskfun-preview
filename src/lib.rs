@@ -3,6 +3,7 @@ extern crate elapsed;
 extern crate encoding;
 extern crate image;
 
+#[repr(u64)]
 pub enum OSStatus {
     NoError = 0,
     SomeError = 1,
@@ -30,6 +31,20 @@ use game_type::*;
 use palette::*;
 use save_game::ReadSaveGameExt;
 use zone_renderer::render_zone;
+
+fn build_game_data_path(base_path: &path::Path, game_type: GameType) -> path::PathBuf {
+    match game_type {
+        GameType::Yoda => base_path.join(path::Path::new("Contents/Resources/yoda.data")),
+        GameType::Indy => base_path.join(path::Path::new("Contents/Resources/indy.data")),
+    }
+}
+
+fn build_palette_path(base_path: &path::Path, game_type: GameType) -> path::PathBuf {
+    match game_type {
+        GameType::Yoda => base_path.join(path::Path::new("Contents/Resources/yoda.pal")),
+        GameType::Indy => base_path.join(path::Path::new("Contents/Resources/indy.pal")),
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn generate_thumbnail(

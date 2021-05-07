@@ -3,7 +3,7 @@ use std::io;
 
 pub trait ReadVersionExt: io::Read {
     fn read_version(&mut self) -> io::Result<()> {
-        self.read_u32::<LE>();
+        let _ = self.read_u32::<LE>();
 
         Ok(())
     }

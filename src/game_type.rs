@@ -1,6 +1,5 @@
 use std::fmt;
 use std::io;
-use std::path;
 
 #[derive(PartialEq, Copy, Clone, Debug)]
 pub enum GameType {
@@ -14,20 +13,6 @@ impl fmt::Display for GameType {
             GameType::Yoda => "Yoda Stories",
             GameType::Indy => "Indiana Jones and his Desktop Adventures",
         })
-    }
-}
-
-pub fn build_game_data_path(base_path: &path::Path, game_type: GameType) -> path::PathBuf {
-    match game_type {
-        GameType::Yoda => base_path.join(path::Path::new("Contents/Resources/yoda.data")),
-        GameType::Indy => base_path.join(path::Path::new("Contents/Resources/indy.data")),
-    }
-}
-
-pub fn build_palette_path(base_path: &path::Path, game_type: GameType) -> path::PathBuf {
-    match game_type {
-        GameType::Yoda => base_path.join(path::Path::new("Contents/Resources/yoda.pal")),
-        GameType::Indy => base_path.join(path::Path::new("Contents/Resources/indy.pal")),
     }
 }
 

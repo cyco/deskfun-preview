@@ -52,15 +52,18 @@ pub trait ReadActionExt: io::Read {
             let mut buffer = vec![0; text_length];
             self.read_exact(&mut buffer)?;
             text = match ISO_8859_1.decode(&buffer, DecoderTrap::Strict) {
-                Ok(t) =>  Ok(t.to_string()),
-                Err(_) => Err(io::Error::new(io::ErrorKind::Other, "Unable to decode string."))
+                Ok(t) => Ok(t.to_string()),
+                Err(_) => Err(io::Error::new(
+                    io::ErrorKind::Other,
+                    "Unable to decode string.",
+                )),
             }?;
         }
 
         Ok(ActionItem {
             opcode: opcode,
             arguments: arguments,
-            text: text
+            text: text,
         })
     }
 

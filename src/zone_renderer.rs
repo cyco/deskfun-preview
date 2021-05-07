@@ -11,7 +11,10 @@ pub fn render_zone(data: &GameData, palette: &Palette, zone_id: u16, hero: Point
     let viewport_height: i64 = 9;
     let mut result = vec![
         0;
-        viewport_width as usize * WIDTH as usize * viewport_height as usize * HEIGHT as usize
+        viewport_width as usize
+            * WIDTH as usize
+            * viewport_height as usize
+            * HEIGHT as usize
             * 4
     ];
     let zone = &data.zones[zone_id as usize];

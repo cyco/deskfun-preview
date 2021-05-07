@@ -1,18 +1,18 @@
 use super::super::GameType;
 use super::marker::ReadMarkerExt;
 use super::tile::TileId;
+use byteorder::{ReadBytesExt, LE};
 use encoding::all::ISO_8859_1;
 use encoding::{DecoderTrap, Encoding};
-use byteorder::{ReadBytesExt, LE};
 use std::io;
 
 pub struct Puzzle {
-    id: usize,
-    name: String,
-    texts: [String; 5],
-    puzzle_type: u32,
-    item_1: TileId,
-    item_2: Option<TileId>,
+    _id: usize,
+    _name: String,
+    _texts: [String; 5],
+    _puzzle_type: u32,
+    _item_1: TileId,
+    _item_2: Option<TileId>,
 }
 
 pub trait ReadPuzzlesExt: io::Read {
@@ -23,13 +23,13 @@ pub trait ReadPuzzlesExt: io::Read {
         }
 
         self.read_category_marker("IPUZ")?;
-        let size = self.read_u32::<LE>();
+        let _size = self.read_u32::<LE>();
         if game_type == GameType::Yoda {
-            let puzzle_type = self.read_u32::<LE>();
+            let _puzzle_type = self.read_u32::<LE>();
         }
-        let unknown1 = self.read_u32::<LE>();
-        let unknown2 = self.read_u32::<LE>();
-        let unknown3 = self.read_u16::<LE>();
+        let _unknown1 = self.read_u32::<LE>();
+        let _unknown2 = self.read_u32::<LE>();
+        let _unknown3 = self.read_u16::<LE>();
 
         let mut texts = [
             String::new(),
@@ -59,13 +59,13 @@ pub trait ReadPuzzlesExt: io::Read {
         };
 
         let puzzle = Puzzle {
-            id: 0,
-            name: String::new(),
-            puzzle_type: 0,
-            item_1: item_1,
-            item_2: item_2,
+            _id: 0,
+            _name: String::new(),
+            _puzzle_type: 0,
+            _item_1: item_1,
+            _item_2: item_2,
 
-            texts: texts,
+            _texts: texts,
         };
 
         Ok(Some(puzzle))

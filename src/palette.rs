@@ -10,7 +10,7 @@ pub enum Color {
 }
 
 impl Palette {
-    pub fn new(input: &mut io::Read) -> io::Result<Palette> {
+    pub fn new(input: &mut dyn io::Read) -> io::Result<Palette> {
         let mut buffer = [0; 0x400];
         input.read_exact(&mut buffer)?;
 

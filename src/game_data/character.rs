@@ -19,17 +19,17 @@ pub trait ReadCharactersExt: io::Read {
         }
 
         self.read_category_marker("ICHA")?;
-        let size = self.read_u32::<LE>();
-        let name = self.read_cstring_with_length(16)?;
-        let char_type = self.read_i16::<LE>();
-        let movement_type = self.read_i16::<LE>();
+        let _size = self.read_u32::<LE>();
+        let _name = self.read_cstring_with_length(16)?;
+        let _char_type = self.read_i16::<LE>();
+        let _movement_type = self.read_i16::<LE>();
         if game_type == GameType::Yoda {
-            let probably_garbage_1 = self.read_i16::<LE>();
-            let probably_garbage_2 = self.read_u32::<LE>();
+            let _probably_garbage_1 = self.read_i16::<LE>();
+            let _probably_garbage_2 = self.read_u32::<LE>();
         }
-        let frame1 = self.read_char_frame();
-        let frame2 = self.read_char_frame();
-        let frame3 = self.read_char_frame();
+        let _frame1 = self.read_char_frame();
+        let _frame2 = self.read_char_frame();
+        let _frame3 = self.read_char_frame();
 
         Ok((index.into(), ()))
     }
@@ -40,14 +40,14 @@ pub trait ReadCharactersExt: io::Read {
             return Ok((index.into(), ()));
         }
 
-        let reference = self.read_u16::<LE>()?;
-        let health = self.read_u16::<LE>()?;
+        let _reference = self.read_u16::<LE>()?;
+        let _health = self.read_u16::<LE>()?;
 
         Ok((index.into(), ()))
     }
 
     fn read_character_weapons(&mut self) -> io::Result<()> {
-        self.read_u32::<LE>();
+        let _ = self.read_u32::<LE>();
 
         loop {
             match self.read_character_weapon()? {
@@ -60,7 +60,7 @@ pub trait ReadCharactersExt: io::Read {
     }
 
     fn read_character_auxiliaries(&mut self) -> io::Result<()> {
-        self.read_u32::<LE>();
+        let _ = self.read_u32::<LE>();
 
         loop {
             match self.read_character_auxiliary()? {
@@ -78,7 +78,7 @@ pub trait ReadCharactersExt: io::Read {
             return Ok((index.into(), ()));
         }
 
-        let damage = self.read_u16::<LE>()?;
+        let _damage = self.read_u16::<LE>()?;
 
         Ok((index.into(), ()))
     }
