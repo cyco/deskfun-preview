@@ -44,7 +44,7 @@ impl SaveGameReading for Indy {
         })
     }
 
-    fn read_world_item(buf: &mut dyn io::Read, _x: u8, _y: u8) -> io::Result<()> {
+    fn read_sector(buf: &mut dyn io::Read, _x: u8, _y: u8) -> io::Result<()> {
         let _visited = Self::read_bool(buf);
         let _solved_1 = Self::read_bool(buf);
         let _solved_2 = Self::read_bool(buf);

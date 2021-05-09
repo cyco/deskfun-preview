@@ -25,12 +25,12 @@ pub trait SaveGameReading {
     fn read_bool(buf: &mut dyn io::Read) -> io::Result<bool>;
 
     fn read_puzzles(buf: &mut dyn io::Read) -> io::Result<Vec<PuzzleId>> {
-        let puzzle_id_count_1 = buf.read_u16::<LE>()?;
-        let mut puzzle_ids_1 = Vec::with_capacity(puzzle_id_count_1 as usize);
-        for _ in 0..puzzle_id_count_1 {
-            puzzle_ids_1.push(buf.read_u16::<LE>()?);
+        let puzzle_id_count = buf.read_u16::<LE>()?;
+        let mut puzzle_ids = Vec::with_capacity(puzzle_id_count as usize);
+        for _ in 0..puzzle_id_count {
+            puzzle_ids.push(buf.read_u16::<LE>()?);
         }
-        Ok(puzzle_ids_1)
+        Ok(puzzle_ids)
     }
 
     fn read_save_game(buf: &mut dyn io::Read, zones: &mut Vec<Zone>) -> io::Result<SaveGame>;
@@ -54,7 +54,7 @@ pub trait SaveGameReading {
     ) -> io::Result<()> {
         for y in y_range {
             for x in x_range.clone() {
-                Self::read_world_item(buf, x, y)?;
+                Self::read_sector(buf, x, y)?;
             }
         }
 
@@ -62,7 +62,7 @@ pub trait SaveGameReading {
         Ok(())
     }
 
-    fn read_world_item(buf: &mut dyn io::Read, x: u8, y: u8) -> io::Result<()>;
+    fn read_sector(buf: &mut dyn io::Read, x: u8, y: u8) -> io::Result<()>;
 
     fn read_world_details(
         buf: &mut dyn io::Read,
@@ -96,41 +96,36 @@ pub trait SaveGameReading {
         mut start: usize,
         game_type: GameType,
     ) -> io::Result<()> {
-        let count: usize;
         let mut zone_ids = Vec::new();
-        {
-            let zone = &mut zones[zone_id as usize];
-            let hotspots = &mut zone.hotspots;
-            count = hotspots.len();
+        let zone = &mut zones[zone_id as usize];
+        let hotspots = &mut zone.hotspots;
+        let count = hotspots.len();
 
-            for i in start..count {
-                start = i;
-                let door;
-                {
-                    let hotspot = &hotspots[i];
-                    if let HotspotType::DoorIn = hotspot.hotspot_type {
-                        if hotspot.argument == -1 {
-                            continue;
-                        }
-
-                        door = hotspot.argument;
-                    } else {
-                        continue;
-                    }
+        for i in start..count {
+            start = i;
+            let door;
+            let hotspot = &hotspots[i];
+            if let HotspotType::DoorIn = hotspot.hotspot_type {
+                if hotspot.argument == -1 {
+                    continue;
                 }
 
-                let zone_id = buf.read_i16::<LE>()?;
-                let visited = Self::read_bool(buf)?;
-
-                assert!(
-                    zone_id == door,
-                    "Expected door to lead to zone {} instead of {}",
-                    zone_id,
-                    door
-                );
-                zone_ids.push((door, visited));
-                break;
+                door = hotspot.argument;
+            } else {
+                continue;
             }
+
+            let zone_id = buf.read_i16::<LE>()?;
+            let visited = Self::read_bool(buf)?;
+
+            assert!(
+                zone_id == door,
+                "Expected door to lead to zone {} instead of {}",
+                zone_id,
+                door
+            );
+            zone_ids.push((door, visited));
+            break;
         }
 
         for (zone_id, visited) in zone_ids {
@@ -151,12 +146,16 @@ pub trait SaveGameReading {
         mut zones: &mut Vec<Zone>,
         game_type: GameType,
     ) -> io::Result<()> {
-        {
-            let mut zone: &mut Zone = &mut zones[zone_id as usize];
-            Self::read_zone(buf, &mut zone, visited, game_type)?;
-        }
+        assert!(
+            zone_id >= 0 && (zone_id as usize) < zones.len(),
+            "Zone {} does not exist!",
+            zone_id
+        );
 
+        let mut zone: &mut Zone = &mut zones[zone_id as usize];
+        Self::read_zone(buf, &mut zone, visited, game_type)?;
         Self::read_rooms(buf, zone_id, &mut zones, 0, game_type)?;
+
         Ok(())
     }
 
@@ -173,7 +172,7 @@ pub trait SaveGameReading {
             let _door_in_y = Self::read_int(buf)?;
 
             if game_type == GameType::Yoda {
-                let _padding = buf.read_u16::<LE>()?;
+                let _sector_counter = buf.read_u16::<LE>()?;
                 let _planet = buf.read_i16::<LE>()?;
             }
 
@@ -183,10 +182,10 @@ pub trait SaveGameReading {
             zone.tiles = tile_ids;
         }
 
-        let __visited = Self::read_bool(buf)?;
+        let visited_2 = Self::read_bool(buf)?;
         Self::read_hotspots(buf, &mut zone, game_type)?;
 
-        if visited {
+        if visited || visited_2 {
             Self::read_npcs(buf, &mut zone, game_type)?;
             Self::read_actions(buf, &mut zone)?;
         }
@@ -200,9 +199,7 @@ pub trait SaveGameReading {
         game_type: GameType,
     ) -> io::Result<()> {
         let count = Self::read_int(buf)?;
-        if count < 0 {
-            return Ok(());
-        }
+        assert!(count >= 0);
 
         if game_type == GameType::Yoda {
             let mut hotspots: Vec<Hotspot> = Vec::with_capacity(count as usize);
@@ -221,10 +218,7 @@ pub trait SaveGameReading {
 
     fn read_npcs(buf: &mut dyn io::Read, zone: &mut Zone, game_type: GameType) -> io::Result<()> {
         let npc_count = Self::read_int(buf)?;
-        if npc_count < 0 {
-            return Ok(());
-        }
-
+        assert!(npc_count >= 0);
         if game_type == GameType::Indy {
             zone.npcs = vec![NPC {}; npc_count as usize];
         }
@@ -245,9 +239,7 @@ pub trait SaveGameReading {
 
     fn read_actions(buf: &mut dyn io::Read, zone: &mut Zone) -> io::Result<()> {
         let action_count = Self::read_int(buf)?;
-        if action_count < 0 {
-            return Ok(());
-        }
+        assert!(action_count >= 0);
 
         for i in 0..zone.actions.len() as usize {
             zone.actions[i].enabled = Self::read_bool(buf)?;

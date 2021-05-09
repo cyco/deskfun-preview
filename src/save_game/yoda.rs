@@ -68,30 +68,29 @@ impl SaveGameReading for Yoda {
     fn read_npc(buf: &mut dyn io::Read) -> io::Result<()> {
         let _character_id = buf.read_i16::<LE>()?;
         let _x = buf.read_i16::<LE>()?;
-        let _character_id = buf.read_i16::<LE>()?;
-        let _x = buf.read_i16::<LE>()?;
         let _y = buf.read_i16::<LE>()?;
-        let _field_a = buf.read_i16::<LE>()?;
-        let _enabled = buf.read_u32::<LE>()? != 0;
+        let _damage_taken = buf.read_i16::<LE>()?;
+        let _enabled = Self::read_bool(buf)?;
         let _field_10 = buf.read_i16::<LE>()?;
-        let _field_x__ = buf.read_i16::<LE>()?;
-        let _field_y__ = buf.read_i16::<LE>()?;
-        let _current_frame = buf.read_i16::<LE>()?;
-        let _field_18 = buf.read_u32::<LE>()?;
-        let _field_1c = buf.read_u32::<LE>()?;
-        let _field_2 = buf.read_u32::<LE>()?;
-        let _field_x_ = buf.read_i16::<LE>()?;
-        let _field_y_ = buf.read_i16::<LE>()?;
-        let _field_3c = buf.read_i16::<LE>()?;
-        let _field_3e = buf.read_i16::<LE>()?;
-        let _field_60 = buf.read_i16::<LE>()?;
-        let _field_26 = buf.read_i16::<LE>()?;
-        let _field_2c = buf.read_u32::<LE>()?;
-        let _field_34 = buf.read_u32::<LE>()?;
-        let _field_28 = buf.read_u32::<LE>()?;
 
-        let _field_24 = buf.read_i16::<LE>()?;
-        let _unknown = buf.read_i16::<LE>()?;
+        let _bullet_x = buf.read_i16::<LE>()?;
+        let _bullet_y = buf.read_i16::<LE>()?;
+        let _current_frame = buf.read_i16::<LE>()?;
+        let _flag_18 = buf.read_u32::<LE>()?;
+        let _flag_1c = buf.read_u32::<LE>()?;
+        let _flag_20 = buf.read_u32::<LE>()?;
+        let _direction_x = buf.read_i16::<LE>()?;
+        let _direction_y = buf.read_i16::<LE>()?;
+
+        let _bullet_offset = buf.read_i16::<LE>()?;
+        let _facing_direction = buf.read_i16::<LE>()?;
+        let _field_60 = buf.read_i16::<LE>()?;
+        let _loot = buf.read_i16::<LE>()?;
+        let _flag_2c = buf.read_u32::<LE>()?;
+        let _flag_34 = buf.read_u32::<LE>()?;
+        let _has_item = buf.read_u32::<LE>()?;
+        let _cooldown = buf.read_i16::<LE>()?;
+        let _preferred = buf.read_i16::<LE>()?;
 
         for _ in 0..4 {
             buf.read_u32::<LE>()?;
@@ -101,25 +100,24 @@ impl SaveGameReading for Yoda {
         Ok(())
     }
 
-    fn read_world_item(buf: &mut dyn io::Read, _x: u8, _y: u8) -> io::Result<()> {
+    fn read_sector(buf: &mut dyn io::Read, _x: u8, _y: u8) -> io::Result<()> {
         let _visited = Self::read_bool(buf);
         let _solved_1 = Self::read_bool(buf);
         let _solved_2 = Self::read_bool(buf);
-
-        let _solved_3 = buf.read_u32::<LE>()? != 0;
-        let _solved_4 = buf.read_u32::<LE>()? != 0;
+        let _solved_3 = Self::read_bool(buf);
+        let _solved_4 = Self::read_bool(buf);
 
         let _zone_id = buf.read_i16::<LE>()?;
-        let _field_c = buf.read_i16::<LE>()?;
+        let _puzzle_index = buf.read_i16::<LE>()?;
         let _required_item_id = buf.read_i16::<LE>()?;
         let _find_item_id = buf.read_i16::<LE>()?;
-        let _field_ea = buf.read_i16::<LE>()?;
+        let _is_goal = buf.read_i16::<LE>()?;
         let _additional_required_item_id = buf.read_i16::<LE>()?;
-        let _field_16 = buf.read_i16::<LE>()?;
+        let _additional_gain_item = buf.read_i16::<LE>()?;
         let _npc_id = buf.read_i16::<LE>()?;
 
-        let _unknown_1 = buf.read_i32::<LE>()?;
-        let _unknown_2 = buf.read_i16::<LE>()?;
+        let _unknown = buf.read_i32::<LE>()?;
+        let _used_alternate_strain = buf.read_i16::<LE>()?;
 
         Ok(())
     }
